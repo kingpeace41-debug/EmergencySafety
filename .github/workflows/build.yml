@@ -29,3 +29,4 @@ jobs:
           name: EmergencySafety-APK
           path: 'app/build/outputs/apk/**/*.apk'
           if-no-files-found: ignore
+          
