@@ -1,33 +1,14 @@
 package com.example.emergencysafety
 
-import android.app.Service
-import android.content.Intent
-import android.os.IBinder
+import android.content.Context
 
-class VoiceTriggerService : Service() {
+class VoiceTriggerManager(private val context: Context) {
 
-    private lateinit var sirenManager: SirenManager
-    private lateinit var voiceTriggerManager: VoiceTriggerManager // Sınıf ismi VoiceTriggerManager olarak düzeltildi
-
-    override fun onCreate() {
-        super.onCreate()
-        sirenManager = SirenManager(this)
-        voiceTriggerManager = VoiceTriggerManager(this)
-
-        // Ses algılandığında Kırmızı Kod / Siren başlatılır
-        voiceTriggerManager.startListening {
-            triggerRedCode()
-        }
+    fun startListening(onRedCodeTriggered: () -> Unit) {
+        // Ses algılama ve dinleme mantığı
     }
 
-    private fun triggerRedCode() {
-        sirenManager.startSiren()
+    fun stopListening() {
+        // Dinlemeyi durdurma mantığı
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        sirenManager.stopSiren()
-    }
-
-    override fun onBind(intent: Intent?): IBinder? = null
 }
