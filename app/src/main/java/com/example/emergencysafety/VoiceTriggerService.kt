@@ -6,24 +6,27 @@ import android.os.IBinder
 
 class VoiceTriggerService : Service() {
 
-    private lateinit var voiceManager: VoiceManager // Veya ses dinleme sınıfınız
     private lateinit var sirenManager: SirenManager
+    private lateinit var voiceManager: VoiceManager
 
     override fun onCreate() {
         super.onCreate()
         sirenManager = SirenManager(this)
         voiceManager = VoiceManager(this)
 
-        // 41. Satırdaki düzeltilmiş dinleyici çağrısı:
+        // Lambda içinde parametre (it/text) kullanmadan doğrudan çağırıyoruz
         voiceManager.startListening {
-            // Ses tetiklendiğinde çalışacak kodlar
             triggerRedCode()
         }
     }
 
     private fun triggerRedCode() {
         sirenManager.startSiren()
-        // Acil durum bildirim / SMS gönderme işlemleri
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sirenManager.stopSiren()
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
