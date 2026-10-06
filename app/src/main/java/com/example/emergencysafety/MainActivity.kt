@@ -12,18 +12,18 @@ class MainActivity : AppCompatActivity() {
 
         val redButton = findViewById<View>(R.id.redButton)
         val yellowButton = findViewById<View>(R.id.yellowButton)
-        val greenButton = findViewById<View>(R.id.greenButton)
+        val blueButton = findViewById<View>(R.id.blueButton)
 
         redButton.setOnClickListener {
-            // Kırmızı iç menü
+            // Kırmızı Acil Durum menüsü
         }
 
         yellowButton.setOnClickListener {
-            // Sarı iç menü
+            // Sarı Uyarı menüsü
         }
 
-        greenButton.setOnClickListener {
-            // Yeşil iç menü
+        blueButton.setOnClickListener {
+            // Mavi Bilgi menüsü
         }
     }
 }
