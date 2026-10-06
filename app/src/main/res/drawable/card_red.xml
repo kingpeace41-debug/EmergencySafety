@@ -1,66 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- Alt koyu gövde -->
+    
+    <!-- 1. Arka Plan Derinlik/Gölge Katmanı (Butona hacim kazandırır) -->
     <item>
         <shape>
-            <gradient
-                android:type="linear"
-                android:angle="270"
-                android:startColor="#FF7777"
-                android:centerColor="#F51B1B"
-                android:endColor="#8E0000" />
-
+            <gradient 
+                android:type="linear" 
+                android:angle="270" 
+                android:startColor="#B80000" 
+                android:endColor="#5C0000" />
             <corners android:radius="27dp" />
-
-            <stroke
-                android:width="2dp"
-                android:color="#FFBABA" />
         </shape>
     </item>
 
-    <!-- Üstten gelen ışık -->
-    <item
-        android:left="3dp"
-        android:top="3dp"
-        android:right="3dp"
-        android:bottom="185dp">
-
+    <!-- 2. Ana Kırmızı Gövde (Biraz yukarı kaydırarak alt gölgeyi belirginleştirdik) -->
+    <item android:bottom="4dp">
         <shape>
-
-            <gradient
-                android:type="linear"
-                android:angle="270"
-                android:startColor="#FFFFFF"
-                android:centerColor="#FFFFC8"
-                android:endColor="#00FFFFFF" />
-
-            <corners android:radius="24dp" />
-
+            <gradient 
+                android:type="linear" 
+                android:angle="270" 
+                android:startColor="#FF4D4D" 
+                android:centerColor="#D60E0E" 
+                android:endColor="#9E0000" />
+            <corners android:radius="27dp" />
+            <stroke 
+                android:width="1.5dp" 
+                android:color="#FF9999" />
         </shape>
-
     </item>
 
-    <!-- Parlak iç kenar -->
-    <item
-        android:left="2dp"
-        android:top="2dp"
-        android:right="2dp"
-        android:bottom="2dp">
-
+    <!-- 3. Modern Üst Parlaklık Efekti (Dinamik ve yumuşak cam parlaması) -->
+    <item 
+        android:left="4dp" 
+        android:top="2dp" 
+        android:right="4dp" 
+        android:bottom="12dp">
         <shape>
+            <gradient 
+                android:type="linear" 
+                android:angle="270" 
+                android:startColor="#E6FFFFFF" 
+                android:centerColor="#33FFFFFF" 
+                android:endColor="#00FFFFFF" 
+                android:centerX="0.5"
+                android:centerY="0.4" />
+            <corners 
+                android:topLeftRadius="24dp" 
+                android:topRightRadius="24dp"
+                android:bottomLeftRadius="12dp"
+                android:bottomRightRadius="12dp" />
+        </shape>
+    </item>
 
+    <!-- 4. İç İnce Parlak Çizgi (Premium hissi veren neon kenar kontürü) -->
+    <item 
+        android:left="2dp" 
+        android:top="1.5dp" 
+        android:right="2dp" 
+        android:bottom="5dp">
+        <shape>
             <solid android:color="#00FFFFFF" />
-
             <corners android:radius="25dp" />
-
-            <stroke
-                android:width="1dp"
-                android:color="#FFFFF2" />
-
+            <stroke 
+                android:width="1dp" 
+                android:color="#FFFFE6" />
         </shape>
-
     </item>
-
+    
 </layer-list>
