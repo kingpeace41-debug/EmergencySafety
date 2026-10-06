@@ -7,15 +7,14 @@ import android.os.IBinder
 class VoiceTriggerService : Service() {
 
     private lateinit var sirenManager: SirenManager
-    private lateinit var voiceManager: VoiceManager
+    private lateinit var voiceTriggerManager: VoiceTriggerManager
 
     override fun onCreate() {
         super.onCreate()
         sirenManager = SirenManager(this)
-        voiceManager = VoiceManager(this)
+        voiceTriggerManager = VoiceTriggerManager(this)
 
-        // Lambda içinde parametre (it/text) kullanmadan doğrudan çağırıyoruz
-        voiceManager.startListening {
+        voiceTriggerManager.startListening {
             triggerRedCode()
         }
     }
@@ -26,6 +25,7 @@ class VoiceTriggerService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        voiceTriggerManager.stopListening()
         sirenManager.stopSiren()
     }
 
