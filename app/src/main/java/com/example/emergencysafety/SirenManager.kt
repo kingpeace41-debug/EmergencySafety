@@ -11,7 +11,6 @@ class SirenManager(private val context: Context) {
 
     fun startSiren() {
         if (mediaPlayer == null) {
-            // Cihazın varsayılan alarm sesini al, yoksa zil sesine düş
             val alarmUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
                 ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
 
