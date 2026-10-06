@@ -3,7 +3,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#061A2B"
+    android:background="@drawable/bg_emergency"
     android:fillViewport="true">
 
     <LinearLayout
