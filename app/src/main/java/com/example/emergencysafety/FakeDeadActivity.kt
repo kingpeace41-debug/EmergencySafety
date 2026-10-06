@@ -23,7 +23,8 @@ class FakeDeadActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fake_dead)
-        makeScreenFakeDead()
+        
+        setupFullScreenOverlay()
 
         val filter = IntentFilter(ACTION_DEACTIVATE_RED_CODE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -33,9 +34,23 @@ class FakeDeadActivity : AppCompatActivity() {
         }
     }
 
-    private fun makeScreenFakeDead() {
-        // Ekranı açık tut ve parlaklığı sıfırla
+    private fun setupFullScreenOverlay() {
+        // Kilit ekranının ve diğer uygulamaların üstünde gösterilmeye zorla
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+        } else {
+            @Suppress("DEPRECATION")
+            window.addFlags(
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+            )
+        }
+
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        
+        // Parlaklığı sıfırla
         val layoutParams = window.attributes
         layoutParams.screenBrightness = 0.0f
         window.attributes = layoutParams
@@ -49,21 +64,16 @@ class FakeDeadActivity : AppCompatActivity() {
     }
 
     private fun restoreScreenAndReturnHome() {
-        // 1. Ekran parlaklığını sistemin normale/orijinal haline getir
         val layoutParams = window.attributes
         layoutParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
         window.attributes = layoutParams
 
-        // 2. Ekranı açık tutma zorunluluğunu kaldır
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        // 3. Uygulamanın Ana Sayfasına (MainActivity) pürüzsüz geri dön
         val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         startActivity(intent)
-
-        // 4. Siyah ekran katmanını kapat
         finish()
     }
 
@@ -78,7 +88,7 @@ class FakeDeadActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        // Geri tuşunu etkisiz kıl
+        // Geri tuşunu kilitler
     }
 
     companion object {
