@@ -15,7 +15,7 @@ class FakeDeadActivity : AppCompatActivity() {
     private val exitReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_DEACTIVATE_RED_CODE) {
-                finish()
+                restoreScreenAndReturnHome()
             }
         }
     }
@@ -34,6 +34,7 @@ class FakeDeadActivity : AppCompatActivity() {
     }
 
     private fun makeScreenFakeDead() {
+        // Ekranı açık tut ve parlaklığı sıfırla
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val layoutParams = window.attributes
         layoutParams.screenBrightness = 0.0f
@@ -45,6 +46,25 @@ class FakeDeadActivity : AppCompatActivity() {
             or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
             or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         )
+    }
+
+    private fun restoreScreenAndReturnHome() {
+        // 1. Ekran parlaklığını sistemin normale/orijinal haline getir
+        val layoutParams = window.attributes
+        layoutParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+        window.attributes = layoutParams
+
+        // 2. Ekranı açık tutma zorunluluğunu kaldır
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        // 3. Uygulamanın Ana Sayfasına (MainActivity) pürüzsüz geri dön
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        startActivity(intent)
+
+        // 4. Siyah ekran katmanını kapat
+        finish()
     }
 
     override fun onDestroy() {
