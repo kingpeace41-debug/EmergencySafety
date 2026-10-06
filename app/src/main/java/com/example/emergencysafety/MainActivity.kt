@@ -3,8 +3,10 @@ package com.example.emergencysafety
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.WindowManager
@@ -15,6 +17,7 @@ import androidx.core.content.ContextCompat
 class MainActivity : AppCompatActivity() {
 
     private val RECORD_AUDIO_REQUEST_CODE = 101
+    private val OVERLAY_PERMISSION_REQUEST_CODE = 102
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         yellowButton?.setOnClickListener { vibrate(it) }
         blueButton?.setOnClickListener { vibrate(it) }
 
-        checkAudioPermissionAndStartService()
+        checkPermissionsAndStartService()
     }
 
     override fun onResume() {
@@ -39,13 +42,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun restoreScreenBrightness() {
-        // Ekran parlaklığını sistemin varsayılan değerine zorla sıfırla
         val layoutParams = window.attributes
         layoutParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
         window.attributes = layoutParams
     }
 
-    private fun checkAudioPermissionAndStartService() {
+    private fun checkPermissionsAndStartService() {
+        // 1. Üstte Gösterim İzni Kontrolü (Arka plandan siyah ekranı basabilmek için)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:$packageName")
+            )
+            startActivityForResult(intent, OVERLAY_PERMISSION_REQUEST_CODE)
+            return
+        }
+
+        // 2. Mikrofon İzni Kontrolü
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 this,
@@ -63,6 +76,13 @@ class MainActivity : AppCompatActivity() {
             startForegroundService(serviceIntent)
         } else {
             startService(serviceIntent)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == OVERLAY_PERMISSION_REQUEST_CODE) {
+            checkPermissionsAndStartService()
         }
     }
 
