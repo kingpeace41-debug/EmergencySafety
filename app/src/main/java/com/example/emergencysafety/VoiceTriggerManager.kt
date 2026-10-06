@@ -105,4 +105,3 @@ class VoiceTriggerManager(
         speechRecognizer = null
     }
 }
-
