@@ -1,9 +1,9 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.emergencysafety">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_app_logo"
+        android:roundIcon="@drawable/ic_app_logo"
         android:label="Emergency Safety"
         android:theme="@style/Theme.AppCompat.Light">
         <activity
@@ -15,4 +15,6 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>
+
