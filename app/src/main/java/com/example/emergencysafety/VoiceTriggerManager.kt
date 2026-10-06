@@ -27,25 +27,29 @@ class VoiceTriggerManager(
         isListening = true
 
         handler.post {
-            if (SpeechRecognizer.isRecognitionAvailable(context)) {
-                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
-                speechRecognizer?.setRecognitionListener(createRecognitionListener())
-                listenInternal()
-            }
+            initAndStartSpeechRecognizer()
         }
     }
 
-    private fun listenInternal() {
+    private fun initAndStartSpeechRecognizer() {
         if (!isListening) return
-        
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "tr-TR")
-            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
-        }
-        
+
         try {
-            speechRecognizer?.startListening(intent)
+            speechRecognizer?.destroy()
+            speechRecognizer = null
+
+            if (SpeechRecognizer.isRecognitionAvailable(context)) {
+                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
+                speechRecognizer?.setRecognitionListener(createRecognitionListener())
+
+                val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                    putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                    putExtra(RecognizerIntent.EXTRA_LANGUAGE, "tr-TR")
+                    putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
+                }
+
+                speechRecognizer?.startListening(intent)
+            }
         } catch (e: Exception) {
             restartListeningWithDelay()
         }
@@ -55,7 +59,7 @@ class VoiceTriggerManager(
         handler.removeCallbacksAndMessages(null)
         handler.postDelayed({
             if (isListening) {
-                listenInternal()
+                initAndStartSpeechRecognizer()
             }
         }, 300)
     }
@@ -68,6 +72,7 @@ class VoiceTriggerManager(
         override fun onEndOfSpeech() {}
 
         override fun onError(error: Int) {
+            // Zamanaşımı veya ses kilitlenmesinde temizce yeniden başlat
             restartListeningWithDelay()
         }
 
@@ -85,7 +90,7 @@ class VoiceTriggerManager(
         for (text in matches) {
             val lower = text.lowercase(Locale.getDefault())
 
-            // Kırmızı Kod Varyasyon Kontrolü ("kırmızı 41", "kırmızı kırk bir", "kırmızı kırkbir")
+            // 1. KIRMIZI KOD TETİKLEME ("Kırmızı 41")
             if (lower.contains("kırmızı") && (lower.contains("41") || lower.contains("kırk bir") || lower.contains("kırkbir"))) {
                 redCodeCount++
                 deactivateCount = 0
@@ -95,8 +100,11 @@ class VoiceTriggerManager(
                 }
                 return
             } 
-            // Mavi Kod Varyasyon Kontrolü ("mavi 41", "mavi kırk bir", "mavi kırkbir")
-            else if (lower.contains("mavi") && (lower.contains("41") || lower.contains("kırk bir") || lower.contains("kırkbir"))) {
+            // 2. KIRMIZI KOD İPTAL ("Kırmızı 42" veya "Mavi 41")
+            else if (
+                (lower.contains("kırmızı") && (lower.contains("42") || lower.contains("kırk iki") || lower.contains("kırkiki"))) ||
+                (lower.contains("mavi") && (lower.contains("41") || lower.contains("kırk bir") || lower.contains("kırkbir")))
+            ) {
                 deactivateCount++
                 redCodeCount = 0
                 if (deactivateCount >= 2) {
@@ -111,7 +119,11 @@ class VoiceTriggerManager(
     fun stopListening() {
         isListening = false
         handler.removeCallbacksAndMessages(null)
-        speechRecognizer?.destroy()
+        try {
+            speechRecognizer?.destroy()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         speechRecognizer = null
     }
 }
