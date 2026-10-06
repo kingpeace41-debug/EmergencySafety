@@ -12,20 +12,23 @@
         android:orientation="vertical"
         android:padding="14dp">
 
-        <!-- LOGO VE BAŞLIK -->
+        <!-- ========================= -->
+        <!-- ÜST LOGO VE BAŞLIK -->
+        <!-- ========================= -->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingTop="12dp"
+            android:paddingTop="8dp"
             android:paddingBottom="12dp">
 
             <ImageView
                 android:layout_width="105dp"
                 android:layout_height="105dp"
-                android:contentDescription="Kangal Emergency Safety"
-                android:src="@drawable/kangal_shield" />
+                android:contentDescription="Emergency Safety"
+                android:src="@drawable/emergency_lightning" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -39,14 +42,14 @@
                     android:layout_height="wrap_content"
                     android:text="EMERGENCY"
                     android:textColor="#FFFFFF"
-                    android:textSize="27sp"
+                    android:textSize="25sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="SAFETY"
-                    android:textColor="#F44336"
+                    android:textColor="#FF2020"
                     android:textSize="32sp"
                     android:textStyle="bold" />
 
@@ -55,19 +58,24 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="Güvenliğiniz Önceliğimiz"
-                    android:textColor="#B7CBE0"
-                    android:textSize="14sp" />
+                    android:textColor="#B9D7EF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
         </LinearLayout>
 
+
+        <!-- ========================= -->
         <!-- SEÇİM MESAJI -->
+        <!-- ========================= -->
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="18dp"
             android:background="@drawable/prompt_background"
             android:gravity="center"
             android:orientation="horizontal">
@@ -75,14 +83,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="☝"
-                android:textColor="#FFFFFF"
-                android:textSize="27sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
                 android:text="Acil durumunuzu seçin"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
@@ -90,13 +90,21 @@
 
         </LinearLayout>
 
-        <!-- ÜÇ ANA BUTON -->
+
+        <!-- ========================= -->
+        <!-- ÜÇ ANA KART -->
+        <!-- ========================= -->
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="390dp"
+            android:layout_height="410dp"
             android:orientation="horizontal">
 
-            <!-- KIRMIZI ACİL DURUM -->
+
+            <!-- ===================== -->
+            <!-- KIRMIZI -->
+            <!-- ===================== -->
+
             <LinearLayout
                 android:id="@+id/redButton"
                 android:layout_width="0dp"
@@ -106,13 +114,17 @@
                 android:background="@drawable/card_red"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:padding="10dp">
 
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp" />
+
                 <TextView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
                     android:background="@drawable/icon_red"
                     android:gravity="center"
                     android:text="!"
@@ -121,38 +133,36 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="62dp"
                     android:gravity="center"
                     android:text="ACİL&#10;DURUM"
                     android:textColor="#FFFFFF"
                     android:textSize="21sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center"
-                    android:text="Hemen müdahale&#10;gerekiyor"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
+                <View
+                    android:layout_width="48dp"
+                    android:layout_height="7dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/action_red" />
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="18dp"
-                    android:background="@drawable/action_red"
+                    android:layout_height="65dp"
+                    android:layout_marginTop="12dp"
                     android:gravity="center"
-                    android:text="DOKUN  →"
+                    android:text="Hemen müdahale&#10;gerekiyor"
                     android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textSize="13sp" />
 
             </LinearLayout>
 
-            <!-- SARI UYARI -->
+
+            <!-- ===================== -->
+            <!-- SARI -->
+            <!-- ===================== -->
+
             <LinearLayout
                 android:id="@+id/yellowButton"
                 android:layout_width="0dp"
@@ -163,53 +173,55 @@
                 android:background="@drawable/card_yellow"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:padding="10dp">
 
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp" />
+
                 <TextView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
                     android:background="@drawable/icon_yellow"
                     android:gravity="center"
                     android:text="!"
                     android:textColor="#171717"
-                    android:textSize="43sp"
+                    android:textSize="44sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="62dp"
                     android:gravity="center"
                     android:text="UYARI"
                     android:textColor="#171717"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center"
-                    android:text="Dikkat gerektiren&#10;durum"
-                    android:textColor="#171717"
-                    android:textSize="12sp" />
+                <View
+                    android:layout_width="48dp"
+                    android:layout_height="7dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/action_yellow" />
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="18dp"
-                    android:background="@drawable/action_yellow"
+                    android:layout_height="65dp"
+                    android:layout_marginTop="12dp"
                     android:gravity="center"
-                    android:text="DOKUN  →"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:text="Dikkat gerektiren&#10;durum"
+                    android:textColor="#171717"
+                    android:textSize="13sp" />
 
             </LinearLayout>
 
-            <!-- MAVİ BİLGİ -->
+
+            <!-- ===================== -->
+            <!-- MAVİ -->
+            <!-- ===================== -->
+
             <LinearLayout
                 android:id="@+id/blueButton"
                 android:layout_width="0dp"
@@ -219,62 +231,100 @@
                 android:background="@drawable/card_blue"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:padding="10dp">
 
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp" />
+
                 <TextView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
                     android:background="@drawable/icon_blue"
                     android:gravity="center"
                     android:text="i"
                     android:textColor="#FFFFFF"
-                    android:textSize="43sp"
+                    android:textSize="44sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="62dp"
                     android:gravity="center"
                     android:text="BİLGİ"
                     android:textColor="#FFFFFF"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center"
-                    android:text="Bilgi veya&#10;destek"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
+                <View
+                    android:layout_width="48dp"
+                    android:layout_height="7dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/action_blue" />
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="18dp"
-                    android:background="@drawable/action_blue"
+                    android:layout_height="65dp"
+                    android:layout_marginTop="12dp"
                     android:gravity="center"
-                    android:text="DOKUN  →"
+                    android:text="Bilgi veya&#10;destek"
                     android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textSize="13sp" />
 
             </LinearLayout>
 
         </LinearLayout>
 
+
+        <!-- ========================= -->
+        <!-- ALT ŞİMŞEK AYIRICI -->
+        <!-- ========================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="18dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_weight="1"
+                android:background="#52738C" />
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="⚡"
+                android:textColor="#FF2020"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_weight="1"
+                android:background="#52738C" />
+
+        </LinearLayout>
+
+
+        <!-- ========================= -->
         <!-- ALT MESAJ -->
+        <!-- ========================= -->
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="20dp"
             android:gravity="center"
             android:text="Küçük bir dokunuş,&#10;büyük bir fark yaratabilir."
-            android:textColor="#91ABC3"
+            android:textColor="#A9CBE5"
             android:textSize="15sp"
             android:textStyle="bold" />
 
