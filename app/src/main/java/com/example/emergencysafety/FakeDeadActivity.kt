@@ -10,7 +10,6 @@ class FakeDeadActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Ekranı tam ekran yap ve siyah görünüm ver
         @Suppress("DEPRECATION")
         window.decorView.systemUiVisibility = (
             View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -20,7 +19,6 @@ class FakeDeadActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_fake_dead)
 
-        // Ekrana uzun basıldığında sireni durdur ve acil durum ekranını kapat
         val rootView = findViewById<View>(android.R.id.content)
         rootView.setOnLongClickListener {
             stopSirenAndExit()
@@ -38,7 +36,6 @@ class FakeDeadActivity : AppCompatActivity() {
 
     @Suppress("DEPRECATION")
     override fun onBackPressed() {
-        // Yanlışlıkla geri tuşuna basılıp acil durum ekranının kapanmasını önler.
-        // Çıkmak için ekrana uzun basılması gerekir.
+        // Yanlışlıkla geri tuşuna basılıp ekranın kapanmasını önler
     }
 }
