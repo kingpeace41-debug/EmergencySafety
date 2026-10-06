@@ -83,6 +83,12 @@ class VoiceTriggerService : Service() {
 
         startForeground(1, notification)
     }
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == "ACTION_STOP_SIREN") {
+            sirenManager?.stopSiren()
+        }
+        return START_STICKY
+    }
 
     override fun onDestroy() {
         super.onDestroy()
