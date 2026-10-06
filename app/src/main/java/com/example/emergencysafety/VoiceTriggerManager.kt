@@ -3,6 +3,8 @@ package com.example.emergencysafety
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -15,32 +17,50 @@ class VoiceTriggerManager(
 ) {
     private var speechRecognizer: SpeechRecognizer? = null
     private var isListening = false
+    private val handler = Handler(Looper.getMainLooper())
 
     private var redCodeCount = 0
     private var deactivateCount = 0
 
-    // Tetikleyici ve İptal Şifreleri (Küçük harf duyarlı)
     private val targetActivateWord = "kırmızı 41"
     private val targetDeactivateWord = "mavi 41"
 
     fun startListening() {
         if (isListening) return
+        isListening = true
 
-        if (SpeechRecognizer.isRecognitionAvailable(context)) {
-            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
-            speechRecognizer?.setRecognitionListener(createRecognitionListener())
-            listenInternal()
+        handler.post {
+            if (SpeechRecognizer.isRecognitionAvailable(context)) {
+                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
+                speechRecognizer?.setRecognitionListener(createRecognitionListener())
+                listenInternal()
+            }
         }
     }
 
     private fun listenInternal() {
+        if (!isListening) return
+        
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, "tr-TR")
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
         }
-        isListening = true
-        speechRecognizer?.startListening(intent)
+        
+        try {
+            speechRecognizer?.startListening(intent)
+        } catch (e: Exception) {
+            restartListeningWithDelay()
+        }
+    }
+
+    private fun restartListeningWithDelay() {
+        handler.removeCallbacksAndMessages(null)
+        handler.postDelayed({
+            if (isListening) {
+                listenInternal()
+            }
+        }, 400) // Ses motorunun kilitlenmemesi için 400ms güvenli gecikme
     }
 
     private fun createRecognitionListener() = object : RecognitionListener {
@@ -51,20 +71,13 @@ class VoiceTriggerManager(
         override fun onEndOfSpeech() {}
 
         override fun onError(error: Int) {
-            // Sessizlik veya zamanaşımı hatalarında dinleme döngüsünü kesintisiz yeniden başlatır
-            if (isListening) {
-                listenInternal()
-            }
+            restartListeningWithDelay()
         }
 
         override fun onResults(results: Bundle?) {
             val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             matches?.let { processSpokenText(it) }
-
-            // Döngünün sürekli canlı kalmasını sağlar
-            if (isListening) {
-                listenInternal()
-            }
+            restartListeningWithDelay()
         }
 
         override fun onPartialResults(partialResults: Bundle?) {}
@@ -75,20 +88,17 @@ class VoiceTriggerManager(
         for (text in matches) {
             val lower = text.lowercase(Locale.getDefault())
 
-            // 1. Kırmızı Kod Tetikleme Kontrolü
             if (lower.contains(targetActivateWord)) {
                 redCodeCount++
-                deactivateCount = 0 // Diğer sayacı sıfırla
+                deactivateCount = 0
                 if (redCodeCount >= 2) {
                     redCodeCount = 0
                     onRedCodeTriggered()
                 }
                 return
-            } 
-            // 2. Kurtarma/İptal Kodu Kontrolü
-            else if (lower.contains(targetDeactivateWord)) {
+            } else if (lower.contains(targetDeactivateWord)) {
                 deactivateCount++
-                redCodeCount = 0 // Diğer sayacı sıfırla
+                redCodeCount = 0
                 if (deactivateCount >= 2) {
                     deactivateCount = 0
                     onRedCodeDeactivated()
@@ -100,7 +110,7 @@ class VoiceTriggerManager(
 
     fun stopListening() {
         isListening = false
-        speechRecognizer?.stopListening()
+        handler.removeCallbacksAndMessages(null)
         speechRecognizer?.destroy()
         speechRecognizer = null
     }
