@@ -25,16 +25,23 @@ class VoiceTriggerService : Service() {
         setupVoiceRecognition()
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == "ACTION_STOP_SIREN") {
+            sirenManager?.stopSiren()
+        }
+        return START_STICKY
+    }
+
     private fun setupVoiceRecognition() {
         voiceTriggerManager = VoiceTriggerManager(this) { command ->
             triggerVibration()
             
-            // "siren" kelimesi veya acil durum komutu algılandığında siren çal
+            // "siren" veya "kırmızı" kelimesi algılandığında sireni başlat
             if (command.contains("siren", ignoreCase = true) || command.contains("kırmızı", ignoreCase = true)) {
                 sirenManager?.startSiren()
             }
 
-            // Siyah ekranı / Acil durum ekranını başlat
+            // Acil durum ekranını başlat
             val intent = Intent(this, FakeDeadActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
@@ -82,12 +89,6 @@ class VoiceTriggerService : Service() {
             .build()
 
         startForeground(1, notification)
-    }
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == "ACTION_STOP_SIREN") {
-            sirenManager?.stopSiren()
-        }
-        return START_STICKY
     }
 
     override fun onDestroy() {
