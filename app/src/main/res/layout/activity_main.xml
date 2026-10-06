@@ -28,14 +28,14 @@
         android:textSize="22sp"
         android:textStyle="bold" />
 
-    <!-- YEŞİL - NORMAL -->
+    <!-- HAVAI MAVİ - BİLGİ -->
     <Button
-        android:id="@+id/greenButton"
+        android:id="@+id/blueButton"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:backgroundTint="#4CAF50"
-        android:text="YEŞİL\nNORMAL"
+        android:backgroundTint="#03A9F4"
+        android:text="MAVİ\nBİLGİ"
         android:textColor="#FFFFFF"
         android:textSize="22sp"
         android:textStyle="bold" />
