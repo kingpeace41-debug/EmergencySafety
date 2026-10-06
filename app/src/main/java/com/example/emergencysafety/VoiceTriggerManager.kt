@@ -22,9 +22,6 @@ class VoiceTriggerManager(
     private var redCodeCount = 0
     private var deactivateCount = 0
 
-    private val targetActivateWord = "kırmızı 41"
-    private val targetDeactivateWord = "mavi 41"
-
     fun startListening() {
         if (isListening) return
         isListening = true
@@ -44,7 +41,7 @@ class VoiceTriggerManager(
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, "tr-TR")
-            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
         }
         
         try {
@@ -60,7 +57,7 @@ class VoiceTriggerManager(
             if (isListening) {
                 listenInternal()
             }
-        }, 400) // Ses motorunun kilitlenmemesi için 400ms güvenli gecikme
+        }, 300)
     }
 
     private fun createRecognitionListener() = object : RecognitionListener {
@@ -88,7 +85,8 @@ class VoiceTriggerManager(
         for (text in matches) {
             val lower = text.lowercase(Locale.getDefault())
 
-            if (lower.contains(targetActivateWord)) {
+            // Kırmızı Kod Varyasyon Kontrolü ("kırmızı 41", "kırmızı kırk bir", "kırmızı kırkbir")
+            if (lower.contains("kırmızı") && (lower.contains("41") || lower.contains("kırk bir") || lower.contains("kırkbir"))) {
                 redCodeCount++
                 deactivateCount = 0
                 if (redCodeCount >= 2) {
@@ -96,7 +94,9 @@ class VoiceTriggerManager(
                     onRedCodeTriggered()
                 }
                 return
-            } else if (lower.contains(targetDeactivateWord)) {
+            } 
+            // Mavi Kod Varyasyon Kontrolü ("mavi 41", "mavi kırk bir", "mavi kırkbir")
+            else if (lower.contains("mavi") && (lower.contains("41") || lower.contains("kırk bir") || lower.contains("kırkbir"))) {
                 deactivateCount++
                 redCodeCount = 0
                 if (deactivateCount >= 2) {
