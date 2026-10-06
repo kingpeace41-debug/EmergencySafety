@@ -18,6 +18,10 @@ class VoiceTriggerService : Service() {
     private var voiceTriggerManager: VoiceTriggerManager? = null
     private var sirenManager: SirenManager? = null
 
+    // "Siren 41" güvenlik sayacı ve zaman takibi
+    private var sirenTriggerCount = 0
+    private var lastSirenTriggerTime: Long = 0
+
     override fun onCreate() {
         super.onCreate()
         sirenManager = SirenManager(this)
@@ -28,24 +32,39 @@ class VoiceTriggerService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == "ACTION_STOP_SIREN") {
             sirenManager?.stopSiren()
+            sirenTriggerCount = 0 // Sayacı sıfırla
         }
         return START_STICKY
     }
 
     private fun setupVoiceRecognition() {
         voiceTriggerManager = VoiceTriggerManager(this) { command ->
-            triggerVibration()
-            
-            // "siren" veya "kırmızı" kelimesi algılandığında sireni başlat
-            if (command.contains("siren", ignoreCase = true) || command.contains("kırmızı", ignoreCase = true)) {
-                sirenManager?.startSiren()
-            }
+            val normalizedCommand = command.lowercase().replace(" ", "")
 
-            // Acil durum ekranını başlat
-            val intent = Intent(this, FakeDeadActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            // "siren41" veya "siren 41" komutunu kontrol et
+            if (normalizedCommand.contains("siren41") || command.contains("siren 41", ignoreCase = true)) {
+                val currentTime = System.currentTimeMillis()
+
+                // İlk söyleyişin üzerinden 10 saniyeden fazla geçtiyse sayacı sıfırla
+                if (currentTime - lastSirenTriggerTime > 10000) {
+                    sirenTriggerCount = 0
+                }
+
+                sirenTriggerCount++
+                lastSirenTriggerTime = currentTime
+
+                // "Siren 41" üst üste 2 defa algılandığında sireni ve ekranı başlat
+                if (sirenTriggerCount >= 2) {
+                    sirenTriggerCount = 0 // Tetiklendi, sayacı sıfırla
+                    triggerVibration()
+                    sirenManager?.startSiren()
+
+                    val intent = Intent(this, FakeDeadActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    }
+                    startActivity(intent)
+                }
             }
-            startActivity(intent)
         }
         voiceTriggerManager?.startListening()
     }
