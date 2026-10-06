@@ -33,7 +33,7 @@ class VoiceTriggerManager(private val context: Context) {
 
         recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "tr-TR") // Türkçe ses tanıma
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "tr-TR")
             putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, context.packageName)
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
         }
@@ -49,7 +49,6 @@ class VoiceTriggerManager(private val context: Context) {
         override fun onEndOfSpeech() {}
 
         override fun onError(error: Int) {
-            // Sessizlik veya hata durumunda dinlemeyi koparmadan tekrar başlatır
             if (isListening) {
                 speechRecognizer?.startListening(recognizerIntent)
             }
@@ -59,15 +58,20 @@ class VoiceTriggerManager(private val context: Context) {
             val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (matches != null) {
                 for (text in matches) {
-                    val lowerText = text.lowercase(Locale.getDefault())
-                    // Tetikleyici kelimeler (ihtiyacınıza göre kelime ekleyip çıkarabilirsiniz)
-                    if (lowerText.contains("kırmızı kod") || lowerText.contains("yardım") || lowerText.contains("siren")) {
+                    val lowerText = text.lowercase(Locale("tr", "TR"))
+                    
+                    // "41" veya "kırk bir" kelimelerini kontrol et
+                    val hasFortyOne = lowerText.contains("41") || lowerText.contains("kırk bir")
+                    val isRed41 = lowerText.contains("kırmızı") && hasFortyOne
+                    val isSiren41 = lowerText.contains("siren") && hasFortyOne
+                    val isRedCode = lowerText.contains("kırmızı kod") || lowerText.contains("yardım")
+
+                    if (isRed41 || isSiren41 || isRedCode) {
                         onTriggerCallback?.invoke()
                         break
                     }
                 }
             }
-            // Dinlemeye kesintisiz devam eder
             if (isListening) {
                 speechRecognizer?.startListening(recognizerIntent)
             }
