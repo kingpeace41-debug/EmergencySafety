@@ -1,10 +1,7 @@
 package com.example.emergencysafety
 
 import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
-import android.content.Context
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -13,46 +10,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val redButton = findViewById<android.view.View>(R.id.redButton)
-        val yellowButton = findViewById<android.view.View>(R.id.yellowButton)
-        val greenButton = findViewById<android.view.View>(R.id.greenButton)
+        val redButton = findViewById<View>(R.id.redButton)
+        val yellowButton = findViewById<View>(R.id.yellowButton)
+        val greenButton = findViewById<View>(R.id.greenButton)
 
         redButton.setOnClickListener {
-            vibrate()
-            // Daha sonra Kırmızı Acil Durum menüsüne geçilecek
+            // Kırmızı iç menü
         }
 
         yellowButton.setOnClickListener {
-            vibrate()
-            // Daha sonra Sarı Uyarı menüsüne geçilecek
+            // Sarı iç menü
         }
 
         greenButton.setOnClickListener {
-            vibrate()
-            // Daha sonra Yeşil Bilgi menüsüne geçilecek
-        }
-    }
-
-    private fun vibrate() {
-        val vibrator = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            val vibratorManager =
-                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-            vibratorManager.defaultVibrator
-        } else {
-            @Suppress("DEPRECATION")
-            getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        }
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            vibrator.vibrate(
-                VibrationEffect.createOneShot(
-                    100,
-                    VibrationEffect.DEFAULT_AMPLITUDE
-                )
-            )
-        } else {
-            @Suppress("DEPRECATION")
-            vibrator.vibrate(100)
+            // Yeşil iç menü
         }
     }
 }
