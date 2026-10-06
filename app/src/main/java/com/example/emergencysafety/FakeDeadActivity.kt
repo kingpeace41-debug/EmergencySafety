@@ -13,8 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 
 class FakeDeadActivity : AppCompatActivity() {
 
-    private var emergencyTapCount = 0
-    private var lastTapTime: Long = 0
+    private var topLeftTapCount = 0
+    private var bottomRightTapCount = 0
 
     private val exitReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -53,7 +53,6 @@ class FakeDeadActivity : AppCompatActivity() {
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         
-        // Ekran parlaklığını sıfırla
         val layoutParams = window.attributes
         layoutParams.screenBrightness = 0.0f
         window.attributes = layoutParams
@@ -66,26 +65,39 @@ class FakeDeadActivity : AppCompatActivity() {
         )
     }
 
-    // YEDEK KURTARMA: Siyah ekrana 5 kez hızlıca dokunulursa manuel olarak uygulamaya geri döner
+    // YEDEK GİZLİ ŞİFRE: Sol üst köşeye 2 kez, ardından Sağ alt köşeye 1 kez dokunulursa açılır.
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event?.action == MotionEvent.ACTION_DOWN) {
-            val currentTime = System.currentTimeMillis()
-            if (currentTime - lastTapTime < 500) {
-                emergencyTapCount++
-            } else {
-                emergencyTapCount = 1
-            }
-            lastTapTime = currentTime
+            val x = event.x
+            val y = event.y
+            val screenWidth = resources.displayMetrics.widthPixels
+            val screenHeight = resources.displayMetrics.heightPixels
 
-            if (emergencyTapCount >= 5) {
-                restoreScreenAndReturnHome()
+            // Sol üst köşe alanı (%25lik bölge)
+            if (x < screenWidth * 0.25f && y < screenHeight * 0.25f) {
+                topLeftTapCount++
+                if (topLeftTapCount > 2) topLeftTapCount = 1
+            } 
+            // Sağ alt köşe alanı (%25lik bölge)
+            else if (x > screenWidth * 0.75f && y > screenHeight * 0.75f) {
+                if (topLeftTapCount >= 2) {
+                    bottomRightTapCount++
+                    if (bottomRightTapCount >= 1) {
+                        restoreScreenAndReturnHome()
+                    }
+                } else {
+                    topLeftTapCount = 0
+                    bottomRightTapCount = 0
+                }
+            } else {
+                topLeftTapCount = 0
+                bottomRightTapCount = 0
             }
         }
         return super.onTouchEvent(event)
     }
 
     private fun restoreScreenAndReturnHome() {
-        // Ekran parlaklığını sistemin normale/orijinal haline zorla getir
         val layoutParams = window.attributes
         layoutParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
         window.attributes = layoutParams
