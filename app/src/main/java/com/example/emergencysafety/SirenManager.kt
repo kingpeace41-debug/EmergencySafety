@@ -1,38 +1,59 @@
 package com.example.emergencysafety
 
 import android.content.Context
+import android.hardware.camera2.CameraManager
 import android.media.AudioAttributes
-import android.media.AudioManager
 import android.media.MediaPlayer
-import android.media.RingtoneManager
-import android.net.Uri
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 
 class SirenManager(private val context: Context) {
 
     private var mediaPlayer: MediaPlayer? = null
-    private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-    private var originalVolume: Int = 0
+    private var cameraManager: CameraManager? = null
+    private var cameraId: String? = null
+
+    private val handler = Handler(Looper.getMainLooper())
+    private var isFlashing = false
+    private var isFlashOn = false
+
+    // Flaş çakar döngüsü (saniyede 4 kez yanıp söner)
+    private val flashRunnable = object : Runnable {
+        override fun run() {
+            if (!isFlashing) return
+            try {
+                cameraId?.let { id ->
+                    isFlashOn = !isFlashOn
+                    cameraManager?.setTorchMode(id, isFlashOn)
+                }
+            } catch (e: Exception) {
+                Log.e("SirenManager", "Flaş kontrol hatası: ${e.message}")
+            }
+            handler.postDelayed(this, 250) // 250 ms aralık
+        }
+    }
+
+    init {
+        initCameraManager()
+    }
+
+    private fun initCameraManager() {
+        try {
+            cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+            cameraId = cameraManager?.cameraIdList?.firstOrNull { id ->
+                cameraManager?.getCameraCharacteristics(id)
+                    ?.get(android.hardware.camera2.CameraCharacteristics.FLASH_INFO_AVAILABLE) == true
+            }
+        } catch (e: Exception) {
+            Log.e("SirenManager", "Kamera servisine erişilemedi: ${e.message}")
+        }
+    }
 
     fun startSiren() {
-        if (mediaPlayer?.isPlaying == true) return
-
-        try {
-            // 1. Mevcut ses seviyesini kaydet (Siren kapatıldığında eski ses seviyesine dönmek için)
-            originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
-
-            // 2. Alarm sesini cihazın %100 maksimum seviyesine getir
-            val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
-            audioManager.setStreamVolume(AudioManager.STREAM_ALARM, maxVolume, 0)
-
-            // 3. Cihazın varsayılan Alarm Sesini yakala
-            var alarmUri: Uri? = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-            if (alarmUri == null) {
-                alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
-            }
-
-            // 4. Medya oynatıcıyı kur ve durdurulana kadar döngüye (loop) al
-            mediaPlayer = MediaPlayer().apply {
-                setDataSource(context, alarmUri!!)
+        // 1. Siren Sesini Başlat
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(context, R.raw.siren_sound).apply {
                 setAudioAttributes(
                     AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_ALARM)
@@ -40,25 +61,47 @@ class SirenManager(private val context: Context) {
                         .build()
                 )
                 isLooping = true
-                prepare()
                 start()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } else if (mediaPlayer?.isPlaying == false) {
+            mediaPlayer?.start()
         }
+
+        // 2. Flaş Çakar Efektini Başlat
+        startFlashing()
     }
 
     fun stopSiren() {
-        try {
-            if (mediaPlayer?.isPlaying == true) {
-                mediaPlayer?.stop()
-                mediaPlayer?.release()
-                mediaPlayer = null
+        // 1. Siren Sesini Durdur
+        mediaPlayer?.let {
+            if (it.isPlaying) {
+                it.stop()
             }
-            // Sesi kullanıcının eski ses seviyesine geri getir
-            audioManager.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0)
+            it.release()
+            mediaPlayer = null
+        }
+
+        // 2. Flaş Çakar Efektini Durdur
+        stopFlashing()
+    }
+
+    private fun startFlashing() {
+        if (cameraId == null) return
+        isFlashing = true
+        handler.removeCallbacks(flashRunnable)
+        handler.post(flashRunnable)
+    }
+
+    private fun stopFlashing() {
+        isFlashing = false
+        handler.removeCallbacks(flashRunnable)
+        try {
+            cameraId?.let { id ->
+                cameraManager?.setTorchMode(id, false)
+                isFlashOn = false
+            }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("SirenManager", "Flaş kapatılamadı: ${e.message}")
         }
     }
 }
