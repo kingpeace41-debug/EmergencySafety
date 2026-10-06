@@ -3,63 +3,49 @@ package com.example.emergencysafety
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
 import android.view.View
-import android.widget.Toast
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var voiceTriggerManager: VoiceTriggerManager
     private val RECORD_AUDIO_REQUEST_CODE = 101
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Buton Tanımlamaları ve Dokunsal Geri Bildirim
+        restoreScreenBrightness()
+
         val redButton = findViewById<View>(R.id.redButton)
         val yellowButton = findViewById<View>(R.id.yellowButton)
         val blueButton = findViewById<View>(R.id.blueButton)
 
-        redButton?.setOnClickListener {
-            vibrate(it)
-            // Kırmızı Acil Durum manuel tetikleme alanı
-        }
+        redButton?.setOnClickListener { vibrate(it) }
+        yellowButton?.setOnClickListener { vibrate(it) }
+        blueButton?.setOnClickListener { vibrate(it) }
 
-        yellowButton?.setOnClickListener {
-            vibrate(it)
-            // Sarı Uyarı menüsü alanı
-        }
-
-        blueButton?.setOnClickListener {
-            vibrate(it)
-            // Mavi Bilgi menüsü alanı
-        }
-
-        // Ses Tanıma Yöneticisi Kurulumu
-        voiceTriggerManager = VoiceTriggerManager(
-            context = this,
-            onRedCodeTriggered = {
-                Toast.makeText(this, "KIRMIZI KOD TETİKLENDİ!", Toast.LENGTH_LONG).show()
-                val intent = Intent(this, FakeDeadActivity::class.java)
-                startActivity(intent)
-            },
-            onRedCodeDeactivated = {
-                Toast.makeText(this, "Sistem Güvenli Moda Döndü", Toast.LENGTH_SHORT).show()
-                val deactivateIntent = Intent(FakeDeadActivity.ACTION_DEACTIVATE_RED_CODE)
-                sendBroadcast(deactivateIntent)
-            }
-        )
-
-        // Mikrofon İzin Kontrolü ve Dinlemeyi Başlatma
-        checkAudioPermission()
+        checkAudioPermissionAndStartService()
     }
 
-    private fun checkAudioPermission() {
+    override fun onResume() {
+        super.onResume()
+        restoreScreenBrightness()
+    }
+
+    private fun restoreScreenBrightness() {
+        // Ekran parlaklığını sistemin varsayılan değerine zorla sıfırla
+        val layoutParams = window.attributes
+        layoutParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+        window.attributes = layoutParams
+    }
+
+    private fun checkAudioPermissionAndStartService() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 this,
@@ -67,7 +53,16 @@ class MainActivity : AppCompatActivity() {
                 RECORD_AUDIO_REQUEST_CODE
             )
         } else {
-            voiceTriggerManager.startListening()
+            startVoiceService()
+        }
+    }
+
+    private fun startVoiceService() {
+        val serviceIntent = Intent(this, VoiceTriggerService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent)
+        } else {
+            startService(serviceIntent)
         }
     }
 
@@ -78,18 +73,11 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == RECORD_AUDIO_REQUEST_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            voiceTriggerManager.startListening()
+            startVoiceService()
         }
     }
 
     private fun vibrate(view: View) {
-        view.performHapticFeedback(
-            HapticFeedbackConstants.VIRTUAL_KEY
-        )
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        voiceTriggerManager.stopListening()
+        view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
     }
 }
