@@ -15,78 +15,59 @@ import androidx.core.app.NotificationCompat
 
 class VoiceTriggerService : Service() {
 
-    private lateinit var voiceTriggerManager: VoiceTriggerManager
+    private var voiceTriggerManager: VoiceTriggerManager? = null
+    private var sirenManager: SirenManager? = null
 
     override fun onCreate() {
         super.onCreate()
-        startForegroundServiceWithNotification()
-
-        voiceTriggerManager = VoiceTriggerManager(
-            context = this,
-            onRedCodeTriggered = {
-                vibrateFeedback(isActivation = true)
-                val intent = Intent(this, FakeDeadActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                }
-                startActivity(intent)
-            },
-            onRedCodeDeactivated = {
-                vibrateFeedback(isActivation = false)
-
-                // 1. Yayın Gönder (Paket ismi eklenerek Android 13+ engeli aşıldı)
-                val deactivateIntent = Intent(FakeDeadActivity.ACTION_DEACTIVATE_RED_CODE).apply {
-                    setPackage(packageName)
-                }
-                sendBroadcast(deactivateIntent)
-
-                // 2. Yedek olarak doğrudan MainActivity'yi çağır ve siyah ekranı kapat
-                val mainIntent = Intent(this, MainActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                }
-                startActivity(mainIntent)
-            }
-        )
-        voiceTriggerManager.startListening()
+        sirenManager = SirenManager(this)
+        startForegroundService()
+        setupVoiceRecognition()
     }
 
-    private fun vibrateFeedback(isActivation: Boolean) {
-        try {
-            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-                vibratorManager.defaultVibrator
-            } else {
-                @Suppress("DEPRECATION")
-                getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    private fun setupVoiceRecognition() {
+        voiceTriggerManager = VoiceTriggerManager(this) { command ->
+            triggerVibration()
+            
+            // "siren" kelimesi veya acil durum komutu algılandığında siren çal
+            if (command.contains("siren", ignoreCase = true) || command.contains("kırmızı", ignoreCase = true)) {
+                sirenManager?.startSiren()
             }
 
-            if (isActivation) {
-                // Kırmızı Kod Açılışı: 2 Kısa Titreşim
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 150, 100, 150), -1))
-                } else {
-                    @Suppress("DEPRECATION")
-                    vibrator.vibrate(longArrayOf(0, 150, 100, 150), -1)
-                }
-            } else {
-                // Kırmızı Kod İptali: 1 Uzun Titreşim
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
-                } else {
-                    @Suppress("DEPRECATION")
-                    vibrator.vibrate(500)
-                }
+            // Siyah ekranı / Acil durum ekranını başlat
+            val intent = Intent(this, FakeDeadActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+            startActivity(intent)
+        }
+        voiceTriggerManager?.startListening()
+    }
+
+    private fun triggerVibration() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            val vibrator = vibratorManager.defaultVibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            @Suppress("DEPRECATION")
+            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(300)
+            }
         }
     }
 
-    private fun startForegroundServiceWithNotification() {
-        val channelId = "EmergencySafetyServiceChannel"
+    private fun startForegroundService() {
+        val channelId = "emergency_safety_service"
+        val channelName = "Emergency Safety Service"
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                "Güvenlik Koruma Servisi",
+                channelName,
                 NotificationManager.IMPORTANCE_LOW
             )
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -95,22 +76,19 @@ class VoiceTriggerService : Service() {
 
         val notification: Notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("Emergency Safety Aktif")
-            .setContentText("Güvenlik koruması arka planda çalışıyor.")
+            .setContentText("Sesli komutlar ve güvenlik arka planda dinleniyor.")
             .setSmallIcon(R.drawable.ic_app_logo)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
 
-        startForeground(1001, notification)
+        startForeground(1, notification)
     }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return START_STICKY
-    }
-
-    override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onDestroy() {
         super.onDestroy()
-        voiceTriggerManager.stopListening()
+        voiceTriggerManager?.stopListening()
+        sirenManager?.stopSiren()
     }
+
+    override fun onBind(intent: Intent?): IBinder? = null
 }
