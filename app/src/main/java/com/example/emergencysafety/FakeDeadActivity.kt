@@ -6,11 +6,15 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 
 class FakeDeadActivity : AppCompatActivity() {
+
+    private var emergencyTapCount = 0
+    private var lastTapTime: Long = 0
 
     private val exitReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -35,7 +39,6 @@ class FakeDeadActivity : AppCompatActivity() {
     }
 
     private fun setupFullScreenOverlay() {
-        // Kilit ekranının ve diğer uygulamaların üstünde gösterilmeye zorla
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
@@ -50,7 +53,7 @@ class FakeDeadActivity : AppCompatActivity() {
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         
-        // Parlaklığı sıfırla
+        // Ekran parlaklığını sıfırla
         val layoutParams = window.attributes
         layoutParams.screenBrightness = 0.0f
         window.attributes = layoutParams
@@ -63,7 +66,26 @@ class FakeDeadActivity : AppCompatActivity() {
         )
     }
 
+    // YEDEK KURTARMA: Siyah ekrana 5 kez hızlıca dokunulursa manuel olarak uygulamaya geri döner
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (event?.action == MotionEvent.ACTION_DOWN) {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastTapTime < 500) {
+                emergencyTapCount++
+            } else {
+                emergencyTapCount = 1
+            }
+            lastTapTime = currentTime
+
+            if (emergencyTapCount >= 5) {
+                restoreScreenAndReturnHome()
+            }
+        }
+        return super.onTouchEvent(event)
+    }
+
     private fun restoreScreenAndReturnHome() {
+        // Ekran parlaklığını sistemin normale/orijinal haline zorla getir
         val layoutParams = window.attributes
         layoutParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
         window.attributes = layoutParams
