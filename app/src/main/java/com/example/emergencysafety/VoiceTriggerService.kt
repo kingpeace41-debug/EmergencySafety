@@ -46,8 +46,16 @@ class VoiceTriggerService : Service() {
     }
 
     private fun stopRedCode() {
-        val stopIntent = Intent("com.example.emergencysafety.CLOSE_FAKE_DEAD")
-        sendBroadcast(stopIntent)
+        val stopBroadcast = Intent("com.example.emergencysafety.CLOSE_FAKE_DEAD").apply {
+            setPackage(packageName)
+        }
+        sendBroadcast(stopBroadcast)
+
+        val closeIntent = Intent(this, FakeDeadActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            putExtra("EXTRA_CLOSE", true)
+        }
+        startActivity(closeIntent)
     }
 
     private fun triggerSirenCode() {
@@ -74,7 +82,7 @@ class VoiceTriggerService : Service() {
         val notification: Notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("Emergency Safety Aktif")
             .setContentText("Ses komutları dinleniyor...")
-            .setSmallIcon(android.R.drawable.ic_btn_speak_now)
+            .setSmallIcon(R.drawable.ic_app_logo)
             .setOngoing(true)
             .build()
 
