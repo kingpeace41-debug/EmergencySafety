@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         checkPermissionsAndStartService()
         checkOverlayPermission()
 
-        // Kırmızı Acil Durum Butonunu güvenli şekilde bul (Derleme hatasını önlemek için getIdentifier kullanılır)
+        // Kırmızı Acil Durum Butonu
         val btnRedAlertId = resources.getIdentifier("btnRedAlert", "id", packageName)
         if (btnRedAlertId != 0) {
             val btnRedAlert = findViewById<View>(btnRedAlertId)
@@ -40,6 +40,34 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
             }
+        }
+
+        // Yeni Soft Beyaz Yuvarlak Buton (Dinlemeyi AÇ / KAPAT Şalteri)
+        val btnToggleListeningId = resources.getIdentifier("btnToggleListening", "id", packageName)
+        if (btnToggleListeningId != 0) {
+            val btnToggleListening = findViewById<View>(btnToggleListeningId)
+            btnToggleListening?.setOnClickListener {
+                vibrateOnClick()
+                toggleVoiceService()
+            }
+        }
+    }
+
+    // Dinleme Durumunu Değiştiren (Aktif / Pasif) Fonksiyon
+    private fun toggleVoiceService() {
+        val sharedPref = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+        val isCurrentlyActive = sharedPref.getBoolean("is_voice_active", true)
+
+        if (isCurrentlyActive) {
+            // Pasif Mod: Servisi Durdur ve Hafızaya Kaydet
+            stopVoiceService()
+            sharedPref.edit().putBoolean("is_voice_active", false).apply()
+            Toast.makeText(this, "Sürekli Dinleme KAPATILDI (Pasif Mod)", Toast.LENGTH_LONG).show()
+        } else {
+            // Aktif Mod: Servisi Başlat ve Hafızaya Kaydet
+            sharedPref.edit().putBoolean("is_voice_active", true).apply()
+            startVoiceService()
+            Toast.makeText(this, "Sürekli Dinleme BAŞLATILDI (Aktif Mod)", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -73,7 +101,11 @@ class MainActivity : AppCompatActivity() {
         if (missingPermissions.isNotEmpty()) {
             ActivityCompat.requestPermissions(this, missingPermissions.toTypedArray(), 101)
         } else {
-            startVoiceService()
+            val sharedPref = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+            val isVoiceActive = sharedPref.getBoolean("is_voice_active", true)
+            if (isVoiceActive) {
+                startVoiceService()
+            }
         }
     }
 
@@ -96,6 +128,11 @@ class MainActivity : AppCompatActivity() {
         } else {
             startService(serviceIntent)
         }
+    }
+
+    private fun stopVoiceService() {
+        val serviceIntent = Intent(this, VoiceTriggerService::class.java)
+        stopService(serviceIntent)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -134,7 +171,11 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 101 && grantResults.isNotEmpty()) {
-            startVoiceService()
+            val sharedPref = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+            val isVoiceActive = sharedPref.getBoolean("is_voice_active", true)
+            if (isVoiceActive) {
+                startVoiceService()
+            }
         }
     }
 }
