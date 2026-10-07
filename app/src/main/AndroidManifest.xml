@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.emergencysafety">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- İnternet İzinleri (WhatsApp Cloud API iletişimi için) -->
-    <uses-permission android.permission.INTERNET />
-    <uses-permission android.permission.ACCESS_NETWORK_STATE />
-
-    <!-- Konum İzinleri (Acil durum mesajına GPS Google Maps linki eklemek için) -->
-    <uses-permission android.permission.ACCESS_FINE_LOCATION />
-    <uses-permission android.permission.ACCESS_COARSE_LOCATION />
-
-    <!-- Ses ve Kamera İzinleri (Ses komutu algılama, Flaş ve Kamera kullanımı için) -->
-    <uses-permission android.permission.RECORD_AUDIO />
-    <uses-permission android.permission.CAMERA />
-
-    <!-- Bildirim ve Arka Plan Servis İzinleri -->
-    <uses-permission android.permission.POST_NOTIFICATIONS />
-    <uses-permission android.permission.FOREGROUND_SERVICE />
-    <uses-permission android.permission.SYSTEM_ALERT_WINDOW />
+    <!-- İzinler -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -25,9 +16,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
+        android:theme="@style/Theme.EmergencySafety">
 
-        <!-- 1. Ana Ekran (Uygulama Açılışı) -->
+        <!-- Ana Ekran -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -37,17 +28,13 @@
             </intent-filter>
         </activity>
 
-        <!-- 2. İç Menü Ekranı (2 Büyük Kırmızı Butonlu Sayfa) -->
+        <!-- Diğer Ekranlar -->
         <activity
             android:name=".InnerMenuActivity"
             android:exported="false" />
-
-        <!-- 3. Ses Kodları Ayar Ekranı (1. Kırmızı Buton) -->
         <activity
             android:name=".VoiceCodesActivity"
             android:exported="false" />
-
-        <!-- 4. İletişim Kişileri ve Mesaj Ayar Ekranı (2. Kırmızı Buton) -->
         <activity
             android:name=".ContactsActivity"
             android:exported="false" />
@@ -56,7 +43,8 @@
         <service
             android:name=".VoiceTriggerService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
 
     </application>
 
