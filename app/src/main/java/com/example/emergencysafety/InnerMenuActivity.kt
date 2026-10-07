@@ -1,5 +1,6 @@
 package com.example.emergencysafety
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
@@ -16,14 +17,14 @@ class InnerMenuActivity : AppCompatActivity() {
 
         // 1. Buton: Ses Kodları Menüsü
         btnVoiceCodes.setOnClickListener {
-            Toast.makeText(this, "Ses Kodları Ayarları Yakında...", Toast.LENGTH_SHORT).show()
-            // İleride buraya VoiceCodesActivity yönlendirmesi gelecek
+            val intent = Intent(this, VoiceCodesActivity::class.java)
+            startActivity(intent)
         }
 
         // 2. Buton: İletişim Kişileri ve Mesaj Menüsü
         btnEmergencyContacts.setOnClickListener {
-            Toast.makeText(this, "Kişi Kayıt ve Mesaj Ayarları Yakında...", Toast.LENGTH_SHORT).show()
-            // İleride buraya ContactsActivity yönlendirmesi gelecek
+            Toast.makeText(this, "Kişi Kayıt ve Mesaj Ayarları Sayfasına Geçilecek...", Toast.LENGTH_SHORT).show()
+            // Sıradaki adımda burayı da tanımlayacağız
         }
     }
 }
