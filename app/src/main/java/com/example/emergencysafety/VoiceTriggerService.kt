@@ -74,7 +74,7 @@ class VoiceTriggerService : Service() {
         val notification: Notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("Emergency Safety Aktif")
             .setContentText("Ses komutları dinleniyor...")
-            .setSmallIcon(R.drawable.ic_app_logo)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setOngoing(true)
             .build()
 
