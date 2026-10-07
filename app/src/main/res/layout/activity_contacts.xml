@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_emergency"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📞 Acil Durum Kişileri ve Mesaj"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Acil durumda WhatsApp üzerinden aynı anda bilgilendirilecek 3 kişiyi ve ortak acil durum mesajınızı belirleyin."
+            android:textColor="#CCCCCC"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="20dp" />
+
+        <!-- 1. KİŞİ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1. Yakın İletişim Kişisi:"
+            android:textColor="#FF5252"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <EditText
+                android:id="@+id/etContact1Name"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="#2A2A2A"
+                android:textColor="#FFFFFF"
+                android:hint="Ad Soyad"
+                android:textColorHint="#777777"
+                android:padding="12dp"
+                android:layout_marginEnd="6dp" />
+
+            <EditText
+                android:id="@+id/etContact1Number"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1.2"
+                android:background="#2A2A2A"
+                android:textColor="#FFFFFF"
+                android:hint="905XXXXXXXXX"
+                android:textColorHint="#777777"
+                android:inputType="phone"
+                android:padding="12dp" />
+        </LinearLayout>
+
+        <!-- 2. KİŞİ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2. Yakın İletişim Kişisi:"
+            android:textColor="#FF5252"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <EditText
+                android:id="@+id/etContact2Name"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="#2A2A2A"
+                android:textColor="#FFFFFF"
+                android:hint="Ad Soyad"
+                android:textColorHint="#777777"
+                android:padding="12dp"
+                android:layout_marginEnd="6dp" />
+
+            <EditText
+                android:id="@+id/etContact2Number"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1.2"
+                android:background="#2A2A2A"
+                android:textColor="#FFFFFF"
+                android:hint="905XXXXXXXXX"
+                android:textColorHint="#777777"
+                android:inputType="phone"
+                android:padding="12dp" />
+        </LinearLayout>
+
+        <!-- 3. KİŞİ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="3. Yakın İletişim Kişisi:"
+            android:textColor="#FF5252"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+
+            <EditText
+                android:id="@+id/etContact3Name"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="#2A2A2A"
+                android:textColor="#FFFFFF"
+                android:hint="Ad Soyad"
+                android:textColorHint="#777777"
+                android:padding="12dp"
+                android:layout_marginEnd="6dp" />
+
+            <EditText
+                android:id="@+id/etContact3Number"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1.2"
+                android:background="#2A2A2A"
+                android:textColor="#FFFFFF"
+                android:hint="905XXXXXXXXX"
+                android:textColorHint="#777777"
+                android:inputType="phone"
+                android:padding="12dp" />
+        </LinearLayout>
+
+        <!-- ORTAK ACİL DURUM MESAJI -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ortak Acil Durum Mesajı (Tüm Kişilere Gider):"
+            android:textColor="#FF9800"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etSharedMessage"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#2A2A2A"
+            android:textColor="#FFFFFF"
+            android:hint="🚨 ACİL DURUM! Yardıma ihtiyacım var! Konum bilgim ekte gönderilmiştir."
+            android:textColorHint="#777777"
+            android:gravity="top|start"
+            android:padding="12dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- KAYDET BUTONU -->
+        <Button
+            android:id="@+id/btnSaveContacts"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="#D32F2F"
+            android:text="Kişileri ve Mesajı Kaydet"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+</ScrollView>
