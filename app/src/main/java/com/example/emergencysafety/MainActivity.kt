@@ -1,7 +1,6 @@
 package com.example.emergencysafety
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -9,13 +8,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.Vibrator
-import android.os.VibrationEffect
 import android.provider.Settings
-import android.view.HapticFeedbackConstants
 import android.view.KeyEvent
-import android.view.SoundEffectConstants
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -32,7 +26,6 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissionsAndStartService()
         checkOverlayPermission()
-        setupButtons()
     }
 
     private fun checkPermissionsAndStartService() {
@@ -77,29 +70,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupButtons() {
-        // Buton tıklamalarında titreşim ve ses hissi
-        val rootLayout = findViewById<View>(android.R.id.content)
-        
-        // Buton tıklama geri bildirimi
-        fun triggerFeedback(view: View) {
-            view.playSoundEffect(SoundEffectConstants.CLICK)
-            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-            
-            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
-            } else {
-                @Suppress("DEPRECATION")
-                vibrator.vibrate(50)
-            }
-        }
-
-        // Örnek buton tıklamaları buraya bağlanabilir
-    }
-
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        // Ses Kısma Tuşuna 2 saniye basılı tutarak Sireni Durdurma
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
             if (event?.repeatCount == 0) {
                 volumeDownRunnable = Runnable {
