@@ -14,15 +14,18 @@ class VoiceTriggerManager(private val context: Context) {
     private var speechRecognizer: SpeechRecognizer? = null
     private var recognizerIntent: Intent? = null
     private var onRedCodeCallback: (() -> Unit)? = null
-    private var onCancelCodeCallback: (() -> Unit)? = null
+    private var onSirenCallback: (() -> Unit)? = null
+    private var onCancelCallback: (() -> Unit)? = null
     private var isListening = false
 
     fun startListening(
         onRedCodeTriggered: () -> Unit,
+        onSirenTriggered: () -> Unit,
         onCancelTriggered: () -> Unit
     ) {
         this.onRedCodeCallback = onRedCodeTriggered
-        this.onCancelCodeCallback = onCancelTriggered
+        this.onSirenCallback = onSirenTriggered
+        this.onCancelCallback = onCancelTriggered
         isListening = true
 
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
@@ -68,19 +71,19 @@ class VoiceTriggerManager(private val context: Context) {
                     val hasFortyOne = lowerText.contains("41") || lowerText.contains("kırk bir")
                     val hasFortyTwo = lowerText.contains("42") || lowerText.contains("kırk iki")
 
-                    // Alarmı Başlatan Kodlar
                     val isRed41 = lowerText.contains("kırmızı") && hasFortyOne
                     val isSiren41 = lowerText.contains("siren") && hasFortyOne
-
-                    // Alarmı Kapatan Kodlar
                     val isBlue41 = lowerText.contains("mavi") && hasFortyOne
                     val isRed42 = lowerText.contains("kırmızı") && hasFortyTwo
 
-                    if (isRed41 || isSiren41) {
-                        onRedCodeCallback?.invoke()
+                    if (isRed41) {
+                        onRedCodeCallback?.invoke() // Sadece Kilit
+                        break
+                    } else if (isSiren41) {
+                        onSirenCallback?.invoke()  // Sadece Siren & Flaş
                         break
                     } else if (isBlue41 || isRed42) {
-                        onCancelCodeCallback?.invoke()
+                        onCancelCallback?.invoke() // İptal / Kapat
                         break
                     }
                 }
