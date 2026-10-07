@@ -1,23 +1,22 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.emergencysafety">
 
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    
-    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+    <uses-permission android.permission.RECORD_AUDIO />
+    <uses-permission android.permission.CAMERA />
+    <uses-permission android.permission.POST_NOTIFICATIONS />
+    <uses-permission android.permission.SYSTEM_ALERT_WINDOW />
+    <uses-permission android.permission.FOREGROUND_SERVICE />
+    <uses-permission android.permission.FOREGROUND_SERVICE_MICROPHONE />
+    <uses-permission android.permission.VIBRATE />
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_app_logo"
-        android:roundIcon="@drawable/ic_app_logo"
-        android:label="Emergency Safety"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.EmergencySafety">
 
         <activity
             android:name=".MainActivity"
@@ -31,33 +30,14 @@
         <activity
             android:name=".FakeDeadActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true" />
 
         <service
             android:name=".VoiceTriggerService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="microphone" />
-
-        <receiver
-            android:name=".BootReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name=".EmergencyWidget"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/emergency_widget_info" />
-        </receiver>
 
     </application>
 
