@@ -31,12 +31,15 @@ class MainActivity : AppCompatActivity() {
         checkPermissionsAndStartService()
         checkOverlayPermission()
 
-        // Kırmızı Acil Durum Butonuna Tıklanınca Titreşim Verip İç Menüyü Açar
-        val btnRedAlert = findViewById<View>(R.id.btnRedAlert)
-        btnRedAlert?.setOnClickListener {
-            vibrateOnClick()
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
+        // Kırmızı Acil Durum Butonunu güvenli şekilde bul (Derleme hatasını önlemek için getIdentifier kullanılır)
+        val btnRedAlertId = resources.getIdentifier("btnRedAlert", "id", packageName)
+        if (btnRedAlertId != 0) {
+            val btnRedAlert = findViewById<View>(btnRedAlertId)
+            btnRedAlert?.setOnClickListener {
+                vibrateOnClick()
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
