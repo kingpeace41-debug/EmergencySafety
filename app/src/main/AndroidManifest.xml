@@ -2,13 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.emergencysafety">
 
-    <uses-permission android.permission.RECORD_AUDIO />
-    <uses-permission android.permission.CAMERA />
-    <uses-permission android.permission.POST_NOTIFICATIONS />
-    <uses-permission android.permission.SYSTEM_ALERT_WINDOW />
-    <uses-permission android.permission.FOREGROUND_SERVICE />
-    <uses-permission android.permission.FOREGROUND_SERVICE_MICROPHONE />
-    <uses-permission android.permission.VIBRATE />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
