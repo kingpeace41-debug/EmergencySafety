@@ -1,20 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.emergencysafety">
 
-    <!-- İnternet (WhatsApp API için) -->
+    <!-- İnternet İzinleri (WhatsApp Cloud API iletişimi için) -->
     <uses-permission android.permission.INTERNET />
     <uses-permission android.permission.ACCESS_NETWORK_STATE />
 
-    <!-- Konum (Acil durum mesajına Google Maps linki eklemek için) -->
+    <!-- Konum İzinleri (Acil durum mesajına GPS Google Maps linki eklemek için) -->
     <uses-permission android.permission.ACCESS_FINE_LOCATION />
     <uses-permission android.permission.ACCESS_COARSE_LOCATION />
 
-    <!-- Ses ve Flaş (Ses komutu dinleme ve Siren/Flaş için) -->
+    <!-- Ses ve Kamera İzinleri (Ses komutu algılama, Flaş ve Kamera kullanımı için) -->
     <uses-permission android.permission.RECORD_AUDIO />
     <uses-permission android.permission.CAMERA />
 
+    <!-- Bildirim ve Arka Plan Servis İzinleri -->
+    <uses-permission android.permission.POST_NOTIFICATIONS />
+    <uses-permission android.permission.FOREGROUND_SERVICE />
+    <uses-permission android.permission.SYSTEM_ALERT_WINDOW />
+
     <application
-        ... >
-        ...
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.NoActionBar">
+
+        <!-- Ana Ekran (Uygulama Açılışı) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- İç Menü Ekranı (2 Büyük Kırmızı Butonlu Sayfa) -->
+        <activity
+            android:name=".InnerMenuActivity"
+            android:exported="false" />
+
+        <!-- Arka Plan Ses Dinleme Servisi -->
+        <service
+            android:name=".VoiceTriggerService"
+            android:enabled="true"
+            android:exported="false" />
+
     </application>
+
 </manifest>
