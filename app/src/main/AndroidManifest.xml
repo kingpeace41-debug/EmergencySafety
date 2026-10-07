@@ -47,6 +47,11 @@
             android:name=".VoiceCodesActivity"
             android:exported="false" />
 
+        <!-- 4. İletişim Kişileri ve Mesaj Ayar Ekranı (2. Kırmızı Buton) -->
+        <activity
+            android:name=".ContactsActivity"
+            android:exported="false" />
+
         <!-- Arka Plan Ses Dinleme Servisi -->
         <service
             android:name=".VoiceTriggerService"
