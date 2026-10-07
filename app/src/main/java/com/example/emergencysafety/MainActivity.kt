@@ -24,15 +24,15 @@ class MainActivity : AppCompatActivity() {
     private val volumeDownHandler = Handler(Looper.getMainLooper())
     private var volumeDownRunnable: Runnable? = null
 
-    // SMS ve Konum İzin Pencerelerini Yöneten Launcher
+    // Mikrofon ve Konum İzin Pencerelerini Yöneten Launcher
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        val isSmsGranted = permissions[Manifest.permission.SEND_SMS] ?: false
+        val isAudioGranted = permissions[Manifest.permission.RECORD_AUDIO] ?: false
         val isFineLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
         val isCoarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
 
-        if (isSmsGranted && (isFineLocationGranted || isCoarseLocationGranted)) {
+        if (isAudioGranted && (isFineLocationGranted || isCoarseLocationGranted)) {
             val sharedPref = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
             val isVoiceActive = sharedPref.getBoolean("is_voice_active", true)
             if (isVoiceActive) {
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             Toast.makeText(
                 this,
-                "Acil durum mesajı ve konum göndermek için SMS ve Konum izinleri gereklidir.",
+                "Acil durum tespiti ve konum göndermek için Mikrofon ve Konum izinleri gereklidir.",
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -54,13 +54,13 @@ class MainActivity : AppCompatActivity() {
         checkPermissionsAndStartService()
         checkOverlayPermission()
 
-        // Kırmızı Acil Durum Butonu
+        // Kırmızı Acil Durum Butonu -> İç Menü Ekranına Geçiş Yapar
         val btnRedAlertId = resources.getIdentifier("btnRedAlert", "id", packageName)
         if (btnRedAlertId != 0) {
             val btnRedAlert = findViewById<View>(btnRedAlertId)
             btnRedAlert?.setOnClickListener {
                 vibrateOnClick()
-                val intent = Intent(this, SettingsActivity::class.java)
+                val intent = Intent(this, InnerMenuActivity::class.java)
                 startActivity(intent)
             }
         }
@@ -104,7 +104,6 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermissionsAndStartService() {
         val permissions = mutableListOf(
             Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.SEND_SMS,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
