@@ -102,11 +102,11 @@
 
 
             <!-- ===================== -->
-            <!-- KIRMIZI -->
+            <!-- KIRMIZI (ACİL DURUM) -->
             <!-- ===================== -->
 
             <LinearLayout
-                android:id="@+id/redButton"
+                android:id="@+id/btnRedAlert"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="5dp"
@@ -239,95 +239,4 @@
                     android:layout_width="match_parent"
                     android:layout_height="8dp" />
 
-                <TextView
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:background="@drawable/icon_blue"
-                    android:gravity="center"
-                    android:text="i"
-                    android:textColor="#FFFFFF"
-                    android:textSize="44sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="62dp"
-                    android:gravity="center"
-                    android:text="BİLGİ"
-                    android:textColor="#FFFFFF"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-
-                <View
-                    android:layout_width="48dp"
-                    android:layout_height="7dp"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/action_blue" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="65dp"
-                    android:layout_marginTop="12dp"
-                    android:gravity="center"
-                    android:text="Bilgi veya&#10;destek"
-                    android:textColor="#FFFFFF"
-                    android:textSize="13sp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-
-        <!-- ========================= -->
-        <!-- ALT ŞİMŞEK AYIRICI -->
-        <!-- ========================= -->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginTop="18dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:layout_weight="1"
-                android:background="#52738C" />
-
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="⚡"
-                android:textColor="#FF2020"
-                android:textSize="30sp"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:layout_weight="1"
-                android:background="#52738C" />
-
-        </LinearLayout>
-
-
-        <!-- ========================= -->
-        <!-- ALT MESAJ -->
-        <!-- ========================= -->
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="20dp"
-            android:gravity="center"
-            android:text="Küçük bir dokunuş,&#10;büyük bir fark yaratabilir."
-            android:textColor="#A9CBE5"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-</ScrollView>
+                
