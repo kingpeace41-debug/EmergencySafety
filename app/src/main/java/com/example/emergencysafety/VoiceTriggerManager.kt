@@ -13,23 +13,26 @@ class VoiceTriggerManager(private val context: Context) {
 
     private var speechRecognizer: SpeechRecognizer? = null
     private var recognizerIntent: Intent? = null
-    private var onRedCodeCallback: (() -> Unit)? = null
-    private var onSirenCallback: (() -> Unit)? = null
-    private var onCancelCallback: (() -> Unit)? = null
+    private var onRedStartCallback: (() -> Unit)? = null
+    private var onRedStopCallback: (() -> Unit)? = null
+    private var onSirenStartCallback: (() -> Unit)? = null
+    private var onSirenStopCallback: (() -> Unit)? = null
     private var isListening = false
 
     fun startListening(
-        onRedCodeTriggered: () -> Unit,
-        onSirenTriggered: () -> Unit,
-        onCancelTriggered: () -> Unit
+        onRedStart: () -> Unit,
+        onRedStop: () -> Unit,
+        onSirenStart: () -> Unit,
+        onSirenStop: () -> Unit
     ) {
-        this.onRedCodeCallback = onRedCodeTriggered
-        this.onSirenCallback = onSirenTriggered
-        this.onCancelCallback = onCancelTriggered
+        this.onRedStartCallback = onRedStart
+        this.onRedStopCallback = onRedStop
+        this.onSirenStartCallback = onSirenStart
+        this.onSirenStopCallback = onSirenStop
         isListening = true
 
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
-            Log.e("VoiceTriggerManager", "Ses tanıma bu cihazda desteklenmiyor.")
+            Log.e("VoiceTriggerManager", "Ses tanıma desteklenmiyor.")
             return
         }
 
@@ -72,18 +75,21 @@ class VoiceTriggerManager(private val context: Context) {
                     val hasFortyTwo = lowerText.contains("42") || lowerText.contains("kırk iki")
 
                     val isRed41 = lowerText.contains("kırmızı") && hasFortyOne
-                    val isSiren41 = lowerText.contains("siren") && hasFortyOne
-                    val isBlue41 = lowerText.contains("mavi") && hasFortyOne
                     val isRed42 = lowerText.contains("kırmızı") && hasFortyTwo
+                    val isSiren41 = lowerText.contains("siren") && hasFortyOne
+                    val isSiren42 = lowerText.contains("siren") && hasFortyTwo
 
                     if (isRed41) {
-                        onRedCodeCallback?.invoke() // Sadece Kilit
+                        onRedStartCallback?.invoke()
+                        break
+                    } else if (isRed42) {
+                        onRedStopCallback?.invoke()
                         break
                     } else if (isSiren41) {
-                        onSirenCallback?.invoke()  // Sadece Siren & Flaş
+                        onSirenStartCallback?.invoke()
                         break
-                    } else if (isBlue41 || isRed42) {
-                        onCancelCallback?.invoke() // İptal / Kapat
+                    } else if (isSiren42) {
+                        onSirenStopCallback?.invoke()
                         break
                     }
                 }
