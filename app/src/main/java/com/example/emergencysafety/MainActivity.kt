@@ -1,107 +1,37 @@
 package com.example.emergencysafety
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.provider.Settings
-import android.view.KeyEvent
-import android.view.View
+import android.widget.Button
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
 
-    private val volumeDownHandler = Handler(Looper.getMainLooper())
-    private var volumeDownRunnable: Runnable? = null
-
-    // Mikrofon ve Konum İzin Pencerelerini Yöneten Launcher
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val isAudioGranted = permissions[Manifest.permission.RECORD_AUDIO] ?: false
-        val isFineLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
-        val isCoarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
-
-        if (isAudioGranted && (isFineLocationGranted || isCoarseLocationGranted)) {
-            val sharedPref = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
-            val isVoiceActive = sharedPref.getBoolean("is_voice_active", true)
-            if (isVoiceActive) {
-                startVoiceService()
-            }
-        } else {
-            Toast.makeText(
-                this,
-                "Acil durum tespiti ve konum göndermek için Mikrofon ve Konum izinleri gereklidir.",
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
+    private val PERMISSION_REQUEST_CODE = 200
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        checkPermissionsAndStartService()
-        checkOverlayPermission()
+        val btnOpenMenu = findViewById<Button>(R.id.btnOpenMenu)
 
-        // Kırmızı Acil Durum Butonu -> İç Menü Ekranına Geçiş Yapar
-        val btnRedAlertId = resources.getIdentifier("btnRedAlert", "id", packageName)
-        if (btnRedAlertId != 0) {
-            val btnRedAlert = findViewById<View>(btnRedAlertId)
-            btnRedAlert?.setOnClickListener {
-                vibrateOnClick()
-                val intent = Intent(this, InnerMenuActivity::class.java)
-                startActivity(intent)
-            }
-        }
+        // İzinleri kontrol et ve iste
+        checkAndRequestPermissions()
 
-        // Alt Ortadaki Soft Beyaz Dinleme Şalteri
-        val btnToggleListeningId = resources.getIdentifier("btnToggleListening", "id", packageName)
-        if (btnToggleListeningId != 0) {
-            val btnToggleListening = findViewById<View>(btnToggleListeningId)
-            btnToggleListening?.setOnClickListener {
-                vibrateOnClick()
-                toggleVoiceService()
-            }
+        // İç Menüye geçiş
+        btnOpenMenu?.setOnClickListener {
+            val intent = Intent(this, InnerMenuActivity::class.java)
+            startActivity(intent)
         }
     }
 
-    private fun toggleVoiceService() {
-        val sharedPref = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
-        val isCurrentlyActive = sharedPref.getBoolean("is_voice_active", true)
-
-        if (isCurrentlyActive) {
-            stopVoiceService()
-            sharedPref.edit().putBoolean("is_voice_active", false).apply()
-            Toast.makeText(this, "Sürekli Dinleme KAPATILDI (Pasif Mod)", Toast.LENGTH_LONG).show()
-        } else {
-            sharedPref.edit().putBoolean("is_voice_active", true).apply()
-            startVoiceService()
-            Toast.makeText(this, "Sürekli Dinleme BAŞLATILDI (Aktif Mod)", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun vibrateOnClick() {
-        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            @Suppress("DEPRECATION")
-            vibrator.vibrate(100)
-        }
-    }
-
-    private fun checkPermissionsAndStartService() {
+    private fun checkAndRequestPermissions() {
         val permissions = mutableListOf(
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -112,30 +42,18 @@ class MainActivity : AppCompatActivity() {
             permissions.add(Manifest.permission.POST_NOTIFICATIONS)
         }
 
-        val missingPermissions = permissions.filter {
+        val listPermissionsNeeded = permissions.filter {
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
         }
 
-        if (missingPermissions.isNotEmpty()) {
-            requestPermissionLauncher.launch(missingPermissions.toTypedArray())
+        if (listPermissionsNeeded.isNotEmpty()) {
+            ActivityCompat.requestPermissions(
+                this,
+                listPermissionsNeeded.toTypedArray(),
+                PERMISSION_REQUEST_CODE
+            )
         } else {
-            val sharedPref = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
-            val isVoiceActive = sharedPref.getBoolean("is_voice_active", true)
-            if (isVoiceActive) {
-                startVoiceService()
-            }
-        }
-    }
-
-    private fun checkOverlayPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(this)) {
-                val intent = Intent(
-                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:$packageName")
-                )
-                startActivityForResult(intent, 102)
-            }
+            startVoiceService()
         }
     }
 
@@ -148,37 +66,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun stopVoiceService() {
-        val serviceIntent = Intent(this, VoiceTriggerService::class.java)
-        stopService(serviceIntent)
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            if (event?.repeatCount == 0) {
-                volumeDownRunnable = Runnable {
-                    stopSirenService()
-                    Toast.makeText(this, "Siren durduruldu", Toast.LENGTH_SHORT).show()
-                }
-                volumeDownHandler.postDelayed(volumeDownRunnable!!, 2000)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                Toast.makeText(this, "Tüm izinler verildi. Ses dinleme aktif! 🎙️", Toast.LENGTH_SHORT).show()
+                startVoiceService()
+            } else {
+                Toast.makeText(this, "Acil durum koruması için ses ve konum izinleri gereklidir!", Toast.LENGTH_LONG).show()
             }
-            return true
         }
-        return super.onKeyDown(keyCode, event)
-    }
-
-    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            volumeDownRunnable?.let { volumeDownHandler.removeCallbacks(it) }
-            return true
-        }
-        return super.onKeyUp(keyCode, event)
-    }
-
-    private fun stopSirenService() {
-        val serviceIntent = Intent(this, VoiceTriggerService::class.java).apply {
-            action = "ACTION_STOP_SIREN"
-        }
-        startService(serviceIntent)
     }
 }
