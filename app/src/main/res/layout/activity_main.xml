@@ -92,12 +92,12 @@
 
 
         <!-- ========================= -->
-        <!-- ÜÇ ANA KART -->
+        <!-- ÜÇ ANA KART / BUTON -->
         <!-- ========================= -->
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="340dp"
+            android:layout_height="180dp"
             android:orientation="horizontal">
 
 
@@ -110,14 +110,17 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginEnd="5dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/prompt_background"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="12dp">
 
                 <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
                     android:contentDescription="Kırmızı Alarm"
                     android:src="@android:drawable/ic_dialog_alert" />
 
@@ -142,15 +145,18 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:background="@drawable/prompt_background"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="12dp">
 
                 <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
                     android:contentDescription="Sarı Alarm"
                     android:src="@android:drawable/ic_dialog_info" />
 
@@ -175,14 +181,17 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/prompt_background"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="12dp">
 
                 <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
                     android:contentDescription="Yeşil Alarm"
                     android:src="@android:drawable/ic_menu_info_details" />
 
