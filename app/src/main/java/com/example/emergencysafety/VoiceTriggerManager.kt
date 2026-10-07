@@ -13,11 +13,16 @@ class VoiceTriggerManager(private val context: Context) {
 
     private var speechRecognizer: SpeechRecognizer? = null
     private var recognizerIntent: Intent? = null
-    private var onTriggerCallback: (() -> Unit)? = null
+    private var onRedCodeCallback: (() -> Unit)? = null
+    private var onCancelCodeCallback: (() -> Unit)? = null
     private var isListening = false
 
-    fun startListening(onRedCodeTriggered: () -> Unit) {
-        this.onTriggerCallback = onRedCodeTriggered
+    fun startListening(
+        onRedCodeTriggered: () -> Unit,
+        onCancelTriggered: () -> Unit
+    ) {
+        this.onRedCodeCallback = onRedCodeTriggered
+        this.onCancelCodeCallback = onCancelTriggered
         isListening = true
 
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
@@ -60,14 +65,22 @@ class VoiceTriggerManager(private val context: Context) {
                 for (text in matches) {
                     val lowerText = text.lowercase(Locale("tr", "TR"))
                     
-                    // "41" veya "kırk bir" kelimelerini kontrol et
                     val hasFortyOne = lowerText.contains("41") || lowerText.contains("kırk bir")
+                    val hasFortyTwo = lowerText.contains("42") || lowerText.contains("kırk iki")
+
+                    // Alarmı Başlatan Kodlar
                     val isRed41 = lowerText.contains("kırmızı") && hasFortyOne
                     val isSiren41 = lowerText.contains("siren") && hasFortyOne
-                    val isRedCode = lowerText.contains("kırmızı kod") || lowerText.contains("yardım")
 
-                    if (isRed41 || isSiren41 || isRedCode) {
-                        onTriggerCallback?.invoke()
+                    // Alarmı Kapatan Kodlar
+                    val isBlue41 = lowerText.contains("mavi") && hasFortyOne
+                    val isRed42 = lowerText.contains("kırmızı") && hasFortyTwo
+
+                    if (isRed41 || isSiren41) {
+                        onRedCodeCallback?.invoke()
+                        break
+                    } else if (isBlue41 || isRed42) {
+                        onCancelCodeCallback?.invoke()
                         break
                     }
                 }
