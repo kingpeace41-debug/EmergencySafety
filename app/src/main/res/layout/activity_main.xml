@@ -185,19 +185,4 @@
                 android:layout_marginEnd="4dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="#C78912"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="16dp"
-                        app:cardBackgroundColor="#FBC02D"
+                app:cardBackgroundColor="#C78
