@@ -1,7 +1,7 @@
 package com.example.emergencysafety
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -9,9 +9,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Vibrator
+import android.os.VibrationEffect
 import android.provider.Settings
+import android.view.HapticFeedbackConstants
 import android.view.KeyEvent
-import android.view.MotionEvent
+import android.view.SoundEffectConstants
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -20,8 +23,6 @@ import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
 
-    private var tapCount = 0
-    private var lastTapTime: Long = 0
     private val volumeDownHandler = Handler(Looper.getMainLooper())
     private var volumeDownRunnable: Runnable? = null
 
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissionsAndStartService()
         checkOverlayPermission()
-        setupTripleTapListener()
+        setupButtons()
     }
 
     private fun checkPermissionsAndStartService() {
@@ -76,39 +77,36 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setupTripleTapListener() {
+    private fun setupButtons() {
+        // Buton tıklamalarında titreşim ve ses hissi
         val rootLayout = findViewById<View>(android.R.id.content)
-
-        rootLayout.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val currentTime = System.currentTimeMillis()
-                if (currentTime - lastTapTime < 800) { // 800 ms içinde yapılan dokunuşlar
-                    tapCount++
-                } else {
-                    tapCount = 1
-                }
-                lastTapTime = currentTime
-
-                if (tapCount == 3) { // 3 Defa Dokunma Algılandı
-                    tapCount = 0
-                    stopSirenService()
-                    Toast.makeText(this, "Siren durduruldu", Toast.LENGTH_SHORT).show()
-                }
+        
+        // Buton tıklama geri bildirimi
+        fun triggerFeedback(view: View) {
+            view.playSoundEffect(SoundEffectConstants.CLICK)
+            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            
+            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(50)
             }
-            true
         }
+
+        // Örnek buton tıklamaları buraya bağlanabilir
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        // Sadece Ses Kısma Tuşuna 2 saniye basılı tutmayı algıla
+        // Ses Kısma Tuşuna 2 saniye basılı tutarak Sireni Durdurma
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
             if (event?.repeatCount == 0) {
                 volumeDownRunnable = Runnable {
                     stopSirenService()
-                    Toast.makeText(this, "Ses kısma tuşu ile siren durduruldu", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Siren durduruldu", Toast.LENGTH_SHORT).show()
                 }
-                volumeDownHandler.postDelayed(volumeDownRunnable!!, 2000) // 2 Saniye
+                volumeDownHandler.postDelayed(volumeDownRunnable!!, 2000)
             }
             return true
         }
@@ -128,5 +126,16 @@ class MainActivity : AppCompatActivity() {
             action = "ACTION_STOP_SIREN"
         }
         startService(serviceIntent)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 101 && grantResults.isNotEmpty()) {
+            startVoiceService()
+        }
     }
 }
