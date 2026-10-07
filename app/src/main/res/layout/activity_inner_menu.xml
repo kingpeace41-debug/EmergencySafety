@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="@drawable/bg_emergency">
+
+    <!-- 1. BÜYÜK YUVARLAK BUTON: SES KODLARI -->
+    <Button
+        android:id="@+id/btnVoiceCodes"
+        android:layout_width="210dp"
+        android:layout_height="210dp"
+        android:background="@drawable/bg_circular_red_button"
+        android:text="Acil Durum\nSes Kodları"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:padding="16dp"
+        android:gravity="center"
+        android:textAllCaps="false"
+        android:elevation="8dp" />
+
+    <!-- İKİ BUTON ARASINDAKİ BOŞLUK -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <!-- 2. BÜYÜK YUVARLAK BUTON: BİLGİLENDİRİLECEK KİŞİLER -->
+    <Button
+        android:id="@+id/btnEmergencyContacts"
+        android:layout_width="210dp"
+        android:layout_height="210dp"
+        android:background="@drawable/bg_circular_red_button"
+        android:text="Acil Durumda\nBilgilendirilecek\nKişiler"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:padding="16dp"
+        android:gravity="center"
+        android:textAllCaps="false"
+        android:elevation="8dp" />
+
+</LinearLayout>
