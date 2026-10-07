@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_emergency"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🎙️ Ses Komutları Ayarları"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Uygulamanın arka planda tanıyacağı tetikleyici ses kodlarını buradan belirleyebilirsiniz."
+            android:textColor="#CCCCCC"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="24dp" />
+
+        <!-- 1. ACİL DURUM KODU -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Acil Durum Tetikleme Kodu (Mesaj Gönderir):"
+            android:textColor="#FF5252"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etEmergencyCode"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#2A2A2A"
+            android:textColor="#FFFFFF"
+            android:hint="Örn: kırmızı 41"
+            android:textColorHint="#777777"
+            android:padding="12dp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="💡 Örnek: 'Kırmızı 41' dediğinizde WhatsApp üzerinden 3 kişiye konumlu mesaj gider."
+            android:textColor="#AAAAAA"
+            android:textSize="12sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 2. ACİL DURUM İPTAL KODU -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Acil Durum İptal Kodu:"
+            android:textColor="#FF5252"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etEmergencyCancelCode"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#2A2A2A"
+            android:textColor="#FFFFFF"
+            android:hint="Örn: kırmızı iptal"
+            android:textColorHint="#777777"
+            android:padding="12dp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="💡 Örnek: Yanlışlıkla tetiklendiğinde veya güvende olduğunuzda protokolü durdurur."
+            android:textColor="#AAAAAA"
+            android:textSize="12sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 3. SİREN KODU -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Siren Modu Açma Kodu (Sadece Ses + Flaş):"
+            android:textColor="#FF9800"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etSirenCode"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#2A2A2A"
+            android:textColor="#FFFFFF"
+            android:hint="Örn: siren aç"
+            android:textColorHint="#777777"
+            android:padding="12dp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="💡 Örnek: Caydırıcılık içindir. Sadece yüksek sesli siren çalar ve flaş patlar. MESAJ GİTMER."
+            android:textColor="#AAAAAA"
+            android:textSize="12sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 4. SİREN İPTAL KODU -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Siren Modu İptal Kodu:"
+            android:textColor="#FF9800"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etSirenCancelCode"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#2A2A2A"
+            android:textColor="#FFFFFF"
+            android:hint="Örn: siren kapat"
+            android:textColorHint="#777777"
+            android:padding="12dp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="💡 Örnek: Çalan sireni ve flaşı anında susturur."
+            android:textColor="#AAAAAA"
+            android:textSize="12sp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- KAYDET BUTONU -->
+        <Button
+            android:id="@+id/btnSaveVoiceCodes"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="#D32F2F"
+            android:text="Kodları Kaydet"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+</ScrollView>
