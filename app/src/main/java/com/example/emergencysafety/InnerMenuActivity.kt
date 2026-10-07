@@ -3,7 +3,6 @@ package com.example.emergencysafety
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class InnerMenuActivity : AppCompatActivity() {
@@ -23,8 +22,8 @@ class InnerMenuActivity : AppCompatActivity() {
 
         // 2. Buton: İletişim Kişileri ve Mesaj Menüsü
         btnEmergencyContacts.setOnClickListener {
-            Toast.makeText(this, "Kişi Kayıt ve Mesaj Ayarları Sayfasına Geçilecek...", Toast.LENGTH_SHORT).show()
-            // Sıradaki adımda burayı da tanımlayacağız
+            val intent = Intent(this, ContactsActivity::class.java)
+            startActivity(intent)
         }
     }
 }
