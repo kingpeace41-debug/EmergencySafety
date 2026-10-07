@@ -27,7 +27,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
 
-        <!-- Ana Ekran (Uygulama Açılışı) -->
+        <!-- 1. Ana Ekran (Uygulama Açılışı) -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -37,9 +37,14 @@
             </intent-filter>
         </activity>
 
-        <!-- İç Menü Ekranı (2 Büyük Kırmızı Butonlu Sayfa) -->
+        <!-- 2. İç Menü Ekranı (2 Büyük Kırmızı Butonlu Sayfa) -->
         <activity
             android:name=".InnerMenuActivity"
+            android:exported="false" />
+
+        <!-- 3. Ses Kodları Ayar Ekranı (1. Kırmızı Buton) -->
+        <activity
+            android:name=".VoiceCodesActivity"
             android:exported="false" />
 
         <!-- Arka Plan Ses Dinleme Servisi -->
