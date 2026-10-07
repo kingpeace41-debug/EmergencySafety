@@ -22,22 +22,22 @@ class VoiceTriggerService : Service() {
         startForegroundServiceWithNotification()
 
         voiceTriggerManager.startListening(
-            onRedCodeTriggered = { triggerRedCode() },
-            onCancelTriggered = { stopRedCode() }
+            onRedStart = { triggerRedCode() },
+            onRedStop = { stopRedCode() },
+            onSirenStart = { triggerSirenCode() },
+            onSirenStop = { stopSirenCode() }
         )
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == "ACTION_STOP_ALARM") {
-            stopRedCode()
+        when (intent?.action) {
+            "ACTION_STOP_SIREN" -> stopSirenCode()
+            "ACTION_STOP_RED" -> stopRedCode()
         }
         return START_STICKY
     }
 
     private fun triggerRedCode() {
-        sirenManager.startSiren()
-
-        // Kapkaranlık kilit ekranını (FakeDeadActivity) aç
         val intent = Intent(this, FakeDeadActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
@@ -45,11 +45,16 @@ class VoiceTriggerService : Service() {
     }
 
     private fun stopRedCode() {
-        sirenManager.stopSiren()
-        
-        // Açık olan sahte kilit ekranına kapanma emri gönder
         val stopIntent = Intent("com.example.emergencysafety.CLOSE_FAKE_DEAD")
         sendBroadcast(stopIntent)
+    }
+
+    private fun triggerSirenCode() {
+        sirenManager.startSiren()
+    }
+
+    private fun stopSirenCode() {
+        sirenManager.stopSiren()
     }
 
     private fun startForegroundServiceWithNotification() {
@@ -67,7 +72,7 @@ class VoiceTriggerService : Service() {
 
         val notification: Notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("Emergency Safety Aktif")
-            .setContentText("Acil durum ses komutları dinleniyor...")
+            .setContentText("Ses komutları dinleniyor...")
             .setSmallIcon(R.drawable.ic_app_logo)
             .setOngoing(true)
             .build()
