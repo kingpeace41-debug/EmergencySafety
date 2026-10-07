@@ -6,37 +6,29 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.os.Build
+import android.os.Vibrator
+import android.os.VibrationEffect
 import android.util.Log
 
 class SirenManager(private val context: Context) {
 
     private var mediaPlayer: MediaPlayer? = null
+    private var vibrator: Vibrator? = null
     private var cameraManager: CameraManager? = null
     private var cameraId: String? = null
-    private var isFlashOn = false
-    private var flashThread: Thread? = null
-    @Volatile private var isSirenRunning = false
-
-    init {
-        cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
-        try {
-            cameraId = cameraManager?.cameraIdList?.firstOrNull()
-        } catch (e: Exception) {
-            Log.e("SirenManager", "Kamera erişim hatası: ${e.message}")
-        }
-    }
+    private var isSirenRunning = false
 
     fun startSiren() {
         if (isSirenRunning) return
         isSirenRunning = true
 
-        // 1. Alarm Sesi
+        // 1. Ses Çalma (Alarm Sesi)
         try {
-            val alertUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+            val alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
                 ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
+            
             mediaPlayer = MediaPlayer().apply {
-                setDataSource(context, alertUri)
+                setDataSource(context, alarmUri)
                 setAudioAttributes(
                     AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_ALARM)
@@ -48,57 +40,63 @@ class SirenManager(private val context: Context) {
                 start()
             }
         } catch (e: Exception) {
-            Log.e("SirenManager", "Ses hatası: ${e.message}")
+            Log.e("SirenManager", "Siren sesi başlatılamadı: ${e.message}")
         }
 
-        // 2. Flaş Çakar
-        startFlashBlinking()
-    }
-
-    private fun startFlashBlinking() {
-        if (cameraId == null) return
-
-        flashThread = Thread {
-            try {
-                while (isSirenRunning) {
-                    toggleFlash(!isFlashOn)
-                    Thread.sleep(200) // 200 milisaniyede bir yak/söndür
-                }
-            } catch (e: Exception) {
-                Log.e("SirenManager", "Flaş hatası: ${e.message}")
-            } finally {
-                toggleFlash(false)
-            }
-        }
-        flashThread?.start()
-    }
-
-    private fun toggleFlash(enable: Boolean) {
+        // 2. Titreşim
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && cameraId != null) {
-                cameraManager?.setTorchMode(cameraId!!, enable)
-                isFlashOn = enable
+            vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val pattern = longArrayOf(0, 500, 200, 500)
+                vibrator?.vibrate(VibrationEffect.createWaveform(pattern, 0))
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator?.vibrate(longArrayOf(0, 500, 200, 500), 0)
             }
         } catch (e: Exception) {
-            Log.e("SirenManager", "Torch hatası: ${e.message}")
+            Log.e("SirenManager", "Titreşim başlatılamadı: ${e.message}")
+        }
+
+        // 3. Flaş Açma
+        try {
+            cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+            cameraId = cameraManager?.cameraIdList?.firstOrNull()
+            if (cameraId != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                cameraManager?.setTorchMode(cameraId!!, true)
+            }
+        } catch (e: Exception) {
+            Log.e("SirenManager", "Flaş açılamadı: ${e.message}")
         }
     }
 
     fun stopSiren() {
+        if (!isSirenRunning) return
         isSirenRunning = false
 
+        // Sesi Durdur
         try {
             mediaPlayer?.stop()
             mediaPlayer?.release()
             mediaPlayer = null
         } catch (e: Exception) {
-            Log.e("SirenManager", "Ses durdurma hatası: ${e.message}")
+            Log.e("SirenManager", "Siren durdurulamadı: ${e.message}")
         }
 
-        toggleFlash(false)
-        flashThread?.interrupt()
-        flashThread = null
-    }
+        // Titreşimi Durdur
+        try {
+            vibrator?.cancel()
+            vibrator = null
+        } catch (e: Exception) {
+            Log.e("SirenManager", "Titreşim durdurulamadı: ${e.message}")
+        }
 
-    fun isRunning(): Boolean = isSirenRunning
+        // Flaş Kapat
+        try {
+            if (cameraId != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                cameraManager?.setTorchMode(cameraId!!, false)
+            }
+        } catch (e: Exception) {
+            Log.e("SirenManager", "Flaş kapatılamadı: ${e.message}")
+        }
+    }
 }
