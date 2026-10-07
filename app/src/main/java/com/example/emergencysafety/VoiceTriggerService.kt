@@ -21,9 +21,35 @@ class VoiceTriggerService : Service() {
 
         startForegroundServiceWithNotification()
 
-        voiceTriggerManager.startListening {
-            triggerRedCode()
+        voiceTriggerManager.startListening(
+            onRedCodeTriggered = { triggerRedCode() },
+            onCancelTriggered = { stopRedCode() }
+        )
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == "ACTION_STOP_ALARM") {
+            stopRedCode()
         }
+        return START_STICKY
+    }
+
+    private fun triggerRedCode() {
+        sirenManager.startSiren()
+
+        // Kapkaranlık kilit ekranını (FakeDeadActivity) aç
+        val intent = Intent(this, FakeDeadActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        }
+        startActivity(intent)
+    }
+
+    private fun stopRedCode() {
+        sirenManager.stopSiren()
+        
+        // Açık olan sahte kilit ekranına kapanma emri gönder
+        val stopIntent = Intent("com.example.emergencysafety.CLOSE_FAKE_DEAD")
+        sendBroadcast(stopIntent)
     }
 
     private fun startForegroundServiceWithNotification() {
@@ -47,10 +73,6 @@ class VoiceTriggerService : Service() {
             .build()
 
         startForeground(1, notification)
-    }
-
-    private fun triggerRedCode() {
-        sirenManager.startSiren()
     }
 
     override fun onDestroy() {
