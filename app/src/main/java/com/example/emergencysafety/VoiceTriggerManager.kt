@@ -110,3 +110,4 @@ class VoiceTriggerManager(private val context: Context) {
         speechRecognizer = null
     }
 }
+
