@@ -1,37 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#121212"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="16dp">
+    android:padding="24dp"
+    android:gravity="center_horizontal">
 
-    <Button
+    <!-- Başlık Alanı -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="40dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Acil Durum Güvenlik"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Kontrol Paneli"
+            android:textColor="#888888"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Menü Butonları -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnVoiceCodes"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:text="Sesli Komutlar ve Kodlar" />
+        android:layout_height="60dp"
+        android:layout_marginBottom="16dp"
+        android:text="Sesli Komutlar ve Kodlar"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="14dp"
+        app:backgroundTint="#3F51B5" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnContacts"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:text="Acil Durum Kişileri" />
+        android:layout_height="60dp"
+        android:layout_marginBottom="16dp"
+        android:text="Acil Durum Kişileri"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="14dp"
+        app:backgroundTint="#2E7D32" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSettings"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:text="Ayarlar" />
+        android:layout_height="60dp"
+        android:layout_marginBottom="16dp"
+        android:text="Ayarlar"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="14dp"
+        app:backgroundTint="#424242" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnFakeDead"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Sahte Kapanış" />
+        android:layout_height="60dp"
+        android:text="Sahte Kapanış"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="14dp"
+        app:backgroundTint="#C62828" />
 
 </LinearLayout>
