@@ -1,48 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_emergency"
-    android:fillViewport="true">
+    android:background="#121212">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="14dp">
+        android:padding="20dp">
 
-        <!-- ========================= -->
-        <!-- ÜST LOGO VE BAŞLIK -->
-        <!-- ========================= -->
-
+        <!-- Header (Logo ve Başlık) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingTop="8dp"
-            android:paddingBottom="12dp">
+            android:gravity="center_vertical"
+            android:marginBottom="24dp">
 
             <ImageView
-                android:layout_width="105dp"
-                android:layout_height="105dp"
-                android:contentDescription="Emergency Safety"
-                android:src="@drawable/emergency_lightning" />
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/ic_app_logo" />
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:orientation="vertical"
-                android:paddingStart="12dp">
+                android:paddingStart="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="EMERGENCY"
                     android:textColor="#FFFFFF"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -50,44 +42,63 @@
                     android:layout_height="wrap_content"
                     android:text="SAFETY"
                     android:textColor="#FF2020"
-                    android:textSize="32sp"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
                     android:text="Güvenliğiniz Önceliğimiz"
-                    android:textColor="#B9D7EF"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
+                    android:textColor="#CCCCCC"
+                    android:textSize="14sp" />
             </LinearLayout>
-
         </LinearLayout>
 
-
-        <!-- ========================= -->
-        <!-- SEÇİM MESAJI -->
-        <!-- ========================= -->
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:text="Lütfen bir işlem seçiniz"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:marginBottom="20dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Lütfen bir işlem seçiniz"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+        <!-- Ana Menü Butonları -->
+        <Button
+            android:id="@+id/btnVoiceCodes"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Sesli Komutlar ve Kodlar"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF2020"
+            android:marginBottom="12dp" />
 
-        </LinearLayout>
+        <Button
+            android:id="@+id/btnContacts"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Acil Durum Kişileri"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#2E2E2E"
+            android:marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnSettings"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Uygulama Ayarları"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#2E2E2E"
+            android:marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnFakeDead"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Sahte Ekran / Kapanış"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#2E2E2E"
+            android:marginBottom="12dp" />
 
     </LinearLayout>
-
 </ScrollView>
