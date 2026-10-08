@@ -1,104 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#121212">
+package com.example.emergencysafety
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+import android.content.Intent
+import android.os.Bundle
+import android.widget.Button
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 
-        <!-- Header (Logo ve Başlık) -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:marginBottom="24dp">
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-            <ImageView
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:src="@drawable/ic_app_logo" />
+        // Sesli Komutlar ve Kodlar Butonu
+        findViewById<Button>(R.id.btnVoiceCodes)?.setOnClickListener {
+            startActivity(Intent(this, VoiceCodesActivity::class.java))
+        }
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingStart="16dp">
+        // Henüz dosyası oluşturulmamış butonlar için geçici bildirimler
+        findViewById<Button>(R.id.btnContacts)?.setOnClickListener {
+            Toast.makeText(this, "Acil Durum Kişileri ekranı hazırlanıyor", Toast.LENGTH_SHORT).show()
+        }
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="EMERGENCY"
-                    android:textColor="#FFFFFF"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+        findViewById<Button>(R.id.btnSettings)?.setOnClickListener {
+            Toast.makeText(this, "Ayarlar ekranı hazırlanıyor", Toast.LENGTH_SHORT).show()
+        }
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="SAFETY"
-                    android:textColor="#FF2020"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Güvenliğiniz Önceliğimiz"
-                    android:textColor="#CCCCCC"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lütfen bir işlem seçiniz"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:marginBottom="20dp" />
-
-        <!-- Ana Menü Butonları -->
-        <Button
-            android:id="@+id/btnVoiceCodes"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Sesli Komutlar ve Kodlar"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#FF2020"
-            android:marginBottom="12dp" />
-
-        <Button
-            android:id="@+id/btnContacts"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Acil Durum Kişileri"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#2E2E2E"
-            android:marginBottom="12dp" />
-
-        <Button
-            android:id="@+id/btnSettings"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Uygulama Ayarları"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#2E2E2E"
-            android:marginBottom="12dp" />
-
-        <Button
-            android:id="@+id/btnFakeDead"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Sahte Ekran / Kapanış"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#2E2E2E"
-            android:marginBottom="12dp" />
-
-    </LinearLayout>
-</ScrollView>
+        findViewById<Button>(R.id.btnFakeDead)?.setOnClickListener {
+            Toast.makeText(this, "Sahte Kapanış ekranı hazırlanıyor", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
