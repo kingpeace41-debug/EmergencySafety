@@ -36,9 +36,11 @@ class MainActivity : AppCompatActivity() {
         if (btnRedAlertId != 0) {
             val btnRedAlert = findViewById<View>(btnRedAlertId)
             btnRedAlert?.setOnClickListener {
-                vibrateOnClick()
-                val intent = Intent(this, SettingsActivity::class.java)
-                startActivity(intent)
+    vibrateOnClick()
+    val intent = Intent(this, EmergencyOptionsActivity::class.java)
+    startActivity(intent)
+}
+
             }
         }
 
