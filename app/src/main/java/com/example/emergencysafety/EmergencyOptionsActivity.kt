@@ -2,7 +2,8 @@ package com.example.emergencysafety
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class EmergencyOptionsActivity : AppCompatActivity() {
@@ -11,18 +12,18 @@ class EmergencyOptionsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_emergency_options)
 
-        // 1. Rehber ve Mesaj Ayarları Butonu (2. Adımda sayfasını oluşturunca dolduracağız)
-        val btnContactSettings = findViewById<View>(R.id.btnContactSettings)
+        val btnContactSettings = findViewById<Button>(R.id.btnContactSettings)
+        val btnVoiceSettings = findViewById<Button>(R.id.btnVoiceSettings)
+
+        // 1. Çalışan Buton: Rehber ve Mesaj Ayarları
         btnContactSettings?.setOnClickListener {
-            // Şimdilik boş bırakıyoruz, derleme hatasını engellemek için
+            val intent = Intent(this, ContactSettingsActivity::class.java)
+            startActivity(intent)
         }
 
-        // 2. Sesli Komut Ayarları Butonu
-        val btnVoiceSettings = findViewById<View>(R.id.btnVoiceSettings)
+        // 2. Henüz Ekranı Yapılmayan Buton: Sesli Komut Ayarları
         btnVoiceSettings?.setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-            finish()
+            Toast.makeText(this, "Sesli komut ayarları henüz hazırlanmadı.", Toast.LENGTH_SHORT).show()
         }
     }
 }
