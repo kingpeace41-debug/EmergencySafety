@@ -1,6 +1,5 @@
 package com.example.emergencysafety
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
@@ -15,15 +14,14 @@ class EmergencyOptionsActivity : AppCompatActivity() {
         val btnContactSettings = findViewById<Button>(R.id.btnContactSettings)
         val btnVoiceSettings = findViewById<Button>(R.id.btnVoiceSettings)
 
-        // 1. Çalışan Buton: Rehber ve Mesaj Ayarları
+        // 1. Rehber Ayarları Butonu (Geri tuşu akışı korundu)
         btnContactSettings?.setOnClickListener {
-            val intent = Intent(this, ContactSettingsActivity::class.java)
-            startActivity(intent)
+            Toast.makeText(this, "Rehber ve Mesaj Ayarları ekranına geçiliyor...", Toast.LENGTH_SHORT).show()
         }
 
-        // 2. Henüz Ekranı Yapılmayan Buton: Sesli Komut Ayarları
+        // 2. Sesli Komut Ayarları Butonu
         btnVoiceSettings?.setOnClickListener {
-            Toast.makeText(this, "Sesli komut ayarları henüz hazırlanmadı.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Sesli komut ayarları henüz hazır değil.", Toast.LENGTH_SHORT).show()
         }
     }
 }
