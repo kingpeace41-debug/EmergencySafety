@@ -31,20 +31,18 @@ class MainActivity : AppCompatActivity() {
         checkPermissionsAndStartService()
         checkOverlayPermission()
 
-        // Kırmızı Acil Durum Butonu
+        // 1. Kırmızı Acil Durum Butonu (Yeni Seçim Ekranına Yönlendirir)
         val btnRedAlertId = resources.getIdentifier("btnRedAlert", "id", packageName)
         if (btnRedAlertId != 0) {
             val btnRedAlert = findViewById<View>(btnRedAlertId)
             btnRedAlert?.setOnClickListener {
-    vibrateOnClick()
-    val intent = Intent(this, EmergencyOptionsActivity::class.java)
-    startActivity(intent)
-}
-
+                vibrateOnClick()
+                val intent = Intent(this, EmergencyOptionsActivity::class.java)
+                startActivity(intent)
             }
         }
 
-        // Yeni Soft Beyaz Yuvarlak Buton (Dinlemeyi AÇ / KAPAT Şalteri)
+        // 2. Dinlemeyi AÇ / KAPAT Şalteri
         val btnToggleListeningId = resources.getIdentifier("btnToggleListening", "id", packageName)
         if (btnToggleListeningId != 0) {
             val btnToggleListening = findViewById<View>(btnToggleListeningId)
@@ -55,18 +53,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Dinleme Durumunu Değiştiren (Aktif / Pasif) Fonksiyon
     private fun toggleVoiceService() {
         val sharedPref = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
         val isCurrentlyActive = sharedPref.getBoolean("is_voice_active", true)
 
         if (isCurrentlyActive) {
-            // Pasif Mod: Servisi Durdur ve Hafızaya Kaydet
             stopVoiceService()
             sharedPref.edit().putBoolean("is_voice_active", false).apply()
             Toast.makeText(this, "Sürekli Dinleme KAPATILDI (Pasif Mod)", Toast.LENGTH_LONG).show()
         } else {
-            // Aktif Mod: Servisi Başlat ve Hafızaya Kaydet
             sharedPref.edit().putBoolean("is_voice_active", true).apply()
             startVoiceService()
             Toast.makeText(this, "Sürekli Dinleme BAŞLATILDI (Aktif Mod)", Toast.LENGTH_LONG).show()
